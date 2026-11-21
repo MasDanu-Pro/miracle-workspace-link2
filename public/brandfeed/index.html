@@ -1,1 +1,2994 @@
+<!-- FILE: public/brandfeed/index.html -->
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrandFeed AI Studio - Instagram &amp; Story Katalog Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    window.__brandfeedTailwindConfig = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] },
+          colors: {
+            studio: {
+              bg: '#0b0e14',
+              panel: '#131822',
+              card: '#181f2c',
+              border: '#263042',
+              text: '#eef2f7',
+              muted: '#9aa6bc',
+              teal: '#14b8a6',
+              orange: '#f97316'
+            }
+          }
+        }
+      }
+    };
+    function __applyBrandfeedTailwindConfig() {
+      if (typeof window.tailwind !== 'undefined') {
+        window.tailwind.config = window.__brandfeedTailwindConfig;
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com" onload="__applyBrandfeedTailwindConfig()"></script>
+</head>
+<body class="bg-studio-bg text-studio-text font-sans antialiased min-h-screen selection:bg-studio-teal/30 selection:text-white overflow-x-hidden">
 
+  <!-- Toast Notifikasi -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
+
+  <!-- Modal Info Workers AI -->
+  <div id="cfInfoModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-studio-card border border-studio-border rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl flex flex-col gap-4">
+      <div class="flex items-start justify-between gap-3 border-b border-studio-border pb-3">
+        <div>
+          <h3 class="text-base font-extrabold text-studio-text flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-studio-teal"></span>
+            Integrasi Gratis Cloudflare Workers AI (Rp 0)
+          </h3>
+          <p class="text-xs text-studio-muted mt-0.5">Free Tier 10.000 Neurons/hari (Reset 07:00 WIB / 00:00 UTC)</p>
+        </div>
+        <button type="button" id="closeCfInfoBtn" class="p-1.5 rounded-lg bg-studio-panel hover:bg-slate-700 text-studio-muted hover:text-white transition cursor-pointer" aria-label="Tutup">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex flex-col gap-3 text-xs text-studio-muted leading-relaxed">
+        <div class="rounded-xl bg-studio-teal/10 border border-studio-teal/35 p-3 text-teal-200">
+          Rendering poster HD, logo <strong class="text-white">Feel good.</strong>, footer <strong class="text-white">Shop &amp; talk | Matahari</strong>, harga diskon, ukuran, dan hapus latar polos berjalan <strong class="text-white">100% lokal (0 Neurons)</strong>.
+        </div>
+        <div class="bg-studio-panel border border-studio-border rounded-xl p-3.5 flex flex-col gap-2">
+          <p class="font-bold text-studio-text">Endpoint Aktif di Repositori GitHub:</p>
+          <ul class="list-disc pl-4 space-y-1">
+            <li><code class="text-teal-300">functions/api/analyze.js</code> &rarr; AI Vision isi otomatis Brand, Judul, Tagline, Kategori, Detail &amp; Warna (±20 Neurons).</li>
+            <li><code class="text-teal-300">functions/api/tryon.js</code> &rarr; AI Rapikan Foto (±165 Neurons) &amp; AI Try-On Torso Tanpa Besi / Tangan (±188 Neurons).</li>
+            <li><code class="text-teal-300">functions/api/quota.js</code> &rarr; Monitor kuota live harian langsung di bar atas web.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flex justify-end pt-2 border-t border-studio-border">
+        <button type="button" id="closeCfInfoFooterBtn" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-studio-teal hover:bg-teal-400 text-slate-950 transition cursor-pointer">
+          Mengerti
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wrapper Utama -->
+  <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 py-4 sm:py-5 flex flex-col gap-4">
+
+    <!-- HEADER + MONITOR KUOTA AI REAL-TIME -->
+    <header class="bg-studio-panel border border-studio-border rounded-2xl p-4 sm:px-5 shadow-xl shadow-black/30 flex flex-col gap-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <a href="../" class="inline-flex items-center gap-1.5 text-xs font-semibold text-studio-muted hover:text-studio-teal transition px-2.5 py-1.5 rounded-lg bg-studio-bg/60 border border-studio-border/80">
+          <span>&larr; Kembali ke Workspace</span>
+        </a>
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="studioStatusPill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-studio-teal/15 text-teal-300 border border-studio-teal/35">
+            <span class="w-2 h-2 rounded-full bg-studio-teal animate-pulse"></span>
+            <span id="studioStatusText">Memuat Aset Studio...</span>
+          </span>
+          <button type="button" id="openCfInfoBtn" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-studio-card hover:bg-slate-800 text-orange-300 border border-studio-orange/40 transition cursor-pointer">
+            <span>Info Workers AI (Rp 0)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pt-1 border-t border-studio-border/70">
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-studio-teal to-teal-700 flex items-center justify-center shrink-0 shadow-lg shadow-teal-950/50 border border-teal-400/30">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-studio-text leading-tight">
+              BrandFeed AI Studio
+            </h1>
+            <p class="text-xs text-studio-muted mt-0.5">
+              Produksi Katalog Ritel Rp 0 &bull; AI Try-On Torso Tanpa Besi &bull; AI Vision Full-Auto
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 text-[11px]">
+          <span class="px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-studio-muted font-semibold">9:16 &bull; 4:5 &bull; 1:1 HD</span>
+          <span class="px-2.5 py-1 rounded-lg bg-studio-orange/15 border border-studio-orange/35 text-orange-300 font-semibold">Target 50–100 Poster/Hari</span>
+        </div>
+      </div>
+
+      <!-- MONITOR KUOTA REAL-TIME -->
+      <div class="rounded-xl bg-studio-bg/85 border border-studio-border p-3 flex flex-col gap-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="quotaSourceBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-studio-teal/15 text-teal-300 border border-studio-teal/35">
+              <span id="quotaSourceDot" class="w-1.5 h-1.5 rounded-full bg-studio-teal"></span>
+              <span id="quotaSourceLabel">Estimasi Real-Time</span>
+            </span>
+            <span class="text-xs font-bold text-studio-text">
+              Sisa Kuota AI: <span id="quotaRemainingText" class="text-teal-300">10.000</span> / 10.000 Neurons
+            </span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-[11px]">
+            <span id="downloadStatsBadge" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-sky-500/15 border border-sky-400/35 text-sky-200 font-semibold">Download: 0&times; hari ini (Total 0&times;)</span>
+            <span id="quotaEstTryOnText" class="px-2 py-0.5 rounded-md bg-purple-500/15 border border-purple-400/30 text-purple-200 font-semibold">&plusmn;53&times; AI Try-On</span>
+            <span id="quotaResetCountdown" class="text-studio-muted font-medium">Reset 07:00 WIB</span>
+            <button type="button" id="quotaRefreshBtn" class="px-2.5 py-1 rounded-lg bg-studio-card hover:bg-slate-700 border border-studio-border text-studio-text font-semibold transition cursor-pointer">Refresh</button>
+          </div>
+        </div>
+        <div class="w-full h-2 rounded-full bg-studio-panel overflow-hidden border border-studio-border/80">
+          <div id="quotaProgressBar" class="h-full bg-gradient-to-r from-studio-teal to-emerald-400 transition-all duration-300" style="width: 100%"></div>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-studio-muted">
+          <span id="quotaSubInfo">Terpakai hari ini: 0 Neurons &bull; Desain poster &amp; hapus BG lokal: 0 Neurons (Unlimited).</span>
+          <span id="quotaLastSyncText" class="text-[10px] opacity-80"></span>
+        </div>
+        <!-- Rincian Pemakaian Kuota Hari Ini -->
+        <div id="quotaBreakdownWrap" class="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-studio-border/60 text-[11px]">
+          <span class="text-studio-muted font-semibold shrink-0">Rincian Kuota Terpakai:</span>
+          <div id="quotaBreakdownList" class="flex flex-wrap items-center gap-1.5">
+            <span class="text-studio-muted/80">Belum ada pemakaian AI hari ini.</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 4 MODE UTAMA -->
+    <section aria-label="Pilih 4 Mode Workspace" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+      <button type="button" data-mode="catalog" class="mode-tab text-left p-3.5 rounded-xl border transition-all duration-150 cursor-pointer flex flex-col gap-1">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-teal-400">01 &bull; Katalog</span>
+          <span class="mode-dot w-2.5 h-2.5 rounded-full"></span>
+        </div>
+        <span class="font-bold text-sm text-studio-text">Poster Katalog</span>
+        <span class="text-xs text-studio-muted">Promo tunggal 9:16, 4:5, atau 1:1</span>
+      </button>
+
+      <button type="button" data-mode="feed" class="mode-tab text-left p-3.5 rounded-xl border transition-all duration-150 cursor-pointer flex flex-col gap-1">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-orange-400">02 &bull; Carousel</span>
+          <span class="mode-dot w-2.5 h-2.5 rounded-full"></span>
+        </div>
+        <span class="font-bold text-sm text-studio-text">Mockup Feed IG (3–6 Slide)</span>
+        <span class="text-xs text-studio-muted">Foto &amp; teks per slide + Download Batch</span>
+      </button>
+
+      <button type="button" id="tabHand" data-mode="hand" class="mode-tab text-left p-3.5 rounded-xl border transition-all duration-150 cursor-pointer flex flex-col gap-1 disabled:opacity-40 disabled:cursor-not-allowed">
+        <div class="flex items-center justify-between gap-2">
+          <span id="handTabSub" class="text-[11px] font-bold uppercase tracking-wider text-sky-400">03 &bull; Tangan Acuan</span>
+          <span class="mode-dot w-2.5 h-2.5 rounded-full"></span>
+        </div>
+        <span class="font-bold text-sm text-studio-text">Produk Dipegang</span>
+        <span id="handTabDesc" class="text-xs text-studio-muted">Khusus Tas, Parfum &amp; Kosmetik</span>
+      </button>
+
+      <button type="button" id="tabMannequin" data-mode="mannequin" class="mode-tab text-left p-3.5 rounded-xl border transition-all duration-150 cursor-pointer flex flex-col gap-1 disabled:opacity-40 disabled:cursor-not-allowed">
+        <div class="flex items-center justify-between gap-2">
+          <span id="mannequinTabSub" class="text-[11px] font-bold uppercase tracking-wider text-purple-400">04 &bull; Manekin Polos</span>
+          <span class="mode-dot w-2.5 h-2.5 rounded-full"></span>
+        </div>
+        <span class="font-bold text-sm text-studio-text">Dipakai Model</span>
+        <span id="mannequinTabDesc" class="text-xs text-studio-muted">Torso Tanpa Besi Cewek, Cowok &amp; Anak</span>
+      </button>
+    </section>
+
+    <!-- WORKSPACE 2 KOLOM -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+      <!-- KOLOM KIRI: KONTROL -->
+      <div class="lg:col-span-7 flex flex-col gap-4">
+
+        <!-- PANEL 1: KATEGORI, BRAND & RASIO -->
+        <section class="bg-studio-card border border-studio-border rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-lg shadow-black/20">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-studio-border pb-3">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-studio-text flex items-center gap-2">
+              <span class="w-2 h-5 rounded-full bg-studio-teal"></span>
+              1. Kategori Produk, Brand &amp; Rasio
+            </h2>
+            <span id="ruleStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-500/15 text-teal-300 border border-teal-500/35">
+              Manekin Polos Cewek
+            </span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-studio-muted mb-2">Rasio &amp; Resolusi Export PNG HD</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button type="button" data-ratio="9:16" class="ratio-btn p-2.5 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-0.5">
+                <span class="text-xs sm:text-sm font-extrabold">Story 9:16</span>
+                <span class="text-[10px] opacity-80">1080 &times; 1920</span>
+              </button>
+              <button type="button" data-ratio="4:5" class="ratio-btn p-2.5 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-0.5">
+                <span class="text-xs sm:text-sm font-extrabold">Feed 4:5</span>
+                <span class="text-[10px] opacity-80">1080 &times; 1350</span>
+              </button>
+              <button type="button" data-ratio="1:1" class="ratio-btn p-2.5 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-0.5">
+                <span class="text-xs sm:text-sm font-extrabold">Square 1:1</span>
+                <span class="text-[10px] opacity-80">1080 &times; 1080</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label for="categorySelect" class="block text-xs font-semibold text-studio-muted mb-1.5">Kategori Produk &amp; Aturan Bisnis Otomatis</label>
+            <select id="categorySelect" class="w-full rounded-xl bg-studio-panel border border-studio-border px-3.5 py-2.5 text-sm text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal">
+              <option value="baju_cewek">Pakaian Wanita &mdash; Manekin Cewek (S–XL) &bull; Tanpa Tangan</option>
+              <option value="baju_cowok">Pakaian Pria &mdash; Manekin Cowok (S–XXL) &bull; Tanpa Tangan</option>
+              <option value="baju_anak">Pakaian Anak &mdash; Manekin Anak (2T–8T) &bull; Tanpa Tangan</option>
+              <option value="sepatu">Sepatu &mdash; Tanpa Manekin &amp; Tanpa Tangan (No 36–42)</option>
+              <option value="tas">Tas &mdash; Tanpa Manekin &bull; Bisa Dipegang Tangan Acuan</option>
+              <option value="parfum_kosmetik">Parfum &amp; Kosmetik &mdash; Tanpa Manekin &bull; Bisa Dipegang Tangan Acuan</option>
+            </select>
+          </div>
+
+          <div id="categoryRuleNotice" class="hidden rounded-xl p-3 flex items-start gap-2.5 border text-xs leading-relaxed"></div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="brandPresetSelect" class="block text-xs font-semibold text-studio-muted mb-1.5">Preset Brand Header (Teks)</label>
+              <select id="brandPresetSelect" class="w-full rounded-xl bg-studio-panel border border-studio-border px-3.5 py-2.5 text-sm text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal">
+                <option value="NEVADA">NEVADA</option>
+                <option value="LEVIS">LEVIS</option>
+                <option value="WATCHOUT">WATCHOUT</option>
+                <option value="CARDINAL GIRL">CARDINAL GIRL</option>
+                <option value="DUST">DUST</option>
+                <option value="DISNEY X JAJAN">DISNEY X JAJAN</option>
+                <option value="CONEXION">CONEXION</option>
+                <option value="AERO">AERO</option>
+                <option value="CUSTOM">Custom / Ketik Sendiri</option>
+              </select>
+            </div>
+            <div>
+              <label for="brandTextInput" class="block text-xs font-semibold text-studio-muted mb-1.5">Teks Brand di Kiri Atas Header (Manual / Auto AI)</label>
+              <input id="brandTextInput" type="text" value="NEVADA" maxlength="28" placeholder="Ketik nama brand..." class="w-full rounded-xl bg-studio-panel border border-studio-border px-3.5 py-2.5 text-sm font-bold uppercase tracking-wide text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+            </div>
+          </div>
+
+          <div class="bg-studio-panel border border-studio-border rounded-xl p-3.5 flex flex-col gap-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2 text-xs font-bold text-studio-text cursor-pointer select-none">
+                <input id="showSizesToggle" type="checkbox" checked class="rounded accent-teal-400 w-4 h-4 cursor-pointer" />
+                <span>Tampilkan Pilihan Ukuran / Varian</span>
+              </label>
+              <button type="button" id="selectAllSizesBtn" class="text-[11px] font-semibold text-studio-teal hover:underline cursor-pointer">Pilih Semua</button>
+            </div>
+            <div id="sizeChipsContainer" class="flex flex-wrap gap-2"></div>
+          </div>
+        </section>
+
+        <!-- PANEL 2: FOTO PRODUK, AI RAPIKAN, AI TRY-ON & AI VISION -->
+        <section class="bg-studio-card border border-studio-border rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-lg shadow-black/20">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-studio-border pb-3">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-studio-text flex items-center gap-2">
+              <span class="w-2 h-5 rounded-full bg-studio-orange"></span>
+              2. Foto Produk, AI Try-On &amp; AI Vision (Rp 0)
+            </h2>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" id="sampleShirtBtn" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-studio-panel hover:bg-slate-800 text-teal-300 border border-studio-teal/40 transition cursor-pointer">+ Contoh Baju</button>
+              <button type="button" id="sampleShoeBtn" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-studio-panel hover:bg-slate-800 text-orange-300 border border-studio-orange/40 transition cursor-pointer">+ Contoh Sepatu</button>
+              <button type="button" id="samplePerfumeBtn" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-studio-panel hover:bg-slate-800 text-sky-300 border border-sky-400/40 transition cursor-pointer">+ Contoh Parfum</button>
+            </div>
+          </div>
+
+          <!-- Upload Area -->
+          <label id="dropZone" for="productFileInput" class="relative flex flex-col items-center justify-center gap-2 border-2 border-dashed border-studio-border hover:border-studio-teal rounded-xl p-4 sm:p-5 bg-studio-panel/70 transition cursor-pointer text-center">
+            <input id="productFileInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" />
+            <div class="w-10 h-10 rounded-full bg-studio-card border border-studio-border flex items-center justify-center text-studio-teal">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+            </div>
+            <div>
+              <p id="dropZoneHeading" class="text-sm font-semibold text-studio-text">Klik atau Seret Foto Produk (JPG / PNG / WebP)</p>
+              <p id="uploadFileName" class="text-xs text-studio-muted mt-0.5">Foto mentah maupun PNG transparan siap diproses</p>
+            </div>
+          </label>
+
+          <!-- AI Rapikan Produk -->
+          <div class="rounded-xl bg-gradient-to-br from-sky-950/50 via-studio-panel to-studio-panel border border-sky-400/40 p-3.5 flex flex-col gap-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-sky-200">AI Rapikan Produk (Anti Kusut &amp; Hapus Stiker Harga)</span>
+              <span class="text-[10px] font-semibold text-sky-300/90">Semua Kategori &bull; Rp 0</span>
+            </div>
+            <button type="button" id="aiCleanBtn" class="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-400 hover:to-blue-400 text-white shadow-lg shadow-sky-950/50 transition cursor-pointer disabled:opacity-60">
+              <svg id="aiCleanSpinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <span id="aiCleanBtnText">✨ Rapikan Foto Produk dengan AI (Anti Kusut &amp; Hapus Stiker)</span>
+            </button>
+            <div id="aiCleanStatus" class="hidden text-[11px] text-sky-200 bg-studio-bg/70 border border-sky-400/30 rounded-lg px-3 py-2"></div>
+          </div>
+
+          <!-- AI Try-On Realistis -->
+          <div id="aiTryOnBox" class="rounded-xl bg-gradient-to-br from-purple-950/55 via-studio-panel to-studio-panel border border-purple-400/45 p-3.5 flex flex-col gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span id="aiTryOnHeading" class="text-xs font-bold text-purple-200">AI Try-On Realistis (Dipakai Manekin / Dipegang Tangan &bull; Rp 0)</span>
+              <span class="text-[10px] font-semibold text-purple-300/90">FLUX.2 Klein 4B</span>
+            </div>
+
+            <div id="mannequinOptionsWrap" class="flex flex-col gap-2.5">
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" data-framing="torso" class="framing-btn px-2.5 py-2 rounded-xl text-[11px] font-bold border transition cursor-pointer text-center">
+                  Setengah Badan (Atasan Saja • Tanpa Besi)
+                </button>
+                <button type="button" data-framing="full" class="framing-btn px-2.5 py-2 rounded-xl text-[11px] font-bold border transition cursor-pointer text-center">
+                  Full Body (Dress / Setelan)
+                </button>
+              </div>
+              <div class="flex flex-wrap items-center justify-between gap-2 bg-studio-bg/70 border border-studio-border rounded-xl px-3 py-2">
+                <div class="min-w-0 flex-1">
+                  <span class="block text-[10px] font-bold uppercase tracking-wider text-purple-300">Opsional: Mix &amp; Match Setelan</span>
+                  <span id="bottomUploadName" class="block text-[11px] text-studio-muted truncate">Hanya atasan &rarr; otomatis Manekin Torso (tanpa kaki &amp; tanpa besi)</span>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <label for="bottomFileInput" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-studio-card hover:bg-slate-700 border border-studio-border text-studio-text cursor-pointer transition">+ Upload Bawahan</label>
+                  <input id="bottomFileInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" />
+                  <button type="button" id="clearBottomBtn" class="hidden px-2 py-1.5 rounded-lg text-[11px] font-bold bg-red-500/15 text-red-300 border border-red-500/30 cursor-pointer">Hapus</button>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" id="aiTryOnBtn" class="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-400 hover:to-fuchsia-400 text-white shadow-lg shadow-purple-950/50 transition cursor-pointer disabled:opacity-60">
+              <svg id="aiTryOnSpinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <span id="aiTryOnBtnText">✨ Pakaikan ke Manekin Polos Cewek dengan AI (Rp 0)</span>
+            </button>
+            <div id="aiTryOnStatus" class="hidden text-[11px] text-purple-200 bg-studio-bg/70 border border-purple-400/30 rounded-lg px-3 py-2"></div>
+          </div>
+
+          <!-- AI Vision Full-Auto -->
+          <div class="rounded-xl bg-gradient-to-br from-teal-950/50 via-studio-panel to-studio-panel border border-studio-teal/40 p-3.5 flex flex-col gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-teal-200 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-studio-teal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                AI Vision: Isi Otomatis Brand, Judul, Tagline &amp; Detail
+              </span>
+              <label class="inline-flex items-center gap-1.5 text-[11px] font-medium text-studio-muted cursor-pointer select-none">
+                <input id="autoAnalyzeCheck" type="checkbox" class="rounded accent-teal-400 w-3.5 h-3.5 cursor-pointer" />
+                <span>Auto-analisa saat upload foto</span>
+              </label>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button type="button" id="aiAnalyzeBtn" class="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-studio-teal to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 shadow-lg shadow-teal-950/50 transition cursor-pointer disabled:opacity-60">
+                <svg id="aiAnalyzeSpinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span id="aiAnalyzeBtnText">✨ Analisa Detail Produk dengan AI</span>
+              </button>
+              <button type="button" id="offlineQuickFillBtn" class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-studio-card hover:bg-slate-700 text-studio-text border border-studio-border transition cursor-pointer">
+                <span>🎨 Deteksi Warna &amp; Isi Cepat (Offline Rp 0)</span>
+              </button>
+            </div>
+            <div id="aiAnalyzeStatus" class="hidden text-[11px] text-teal-200 bg-studio-bg/70 border border-studio-teal/30 rounded-lg px-3 py-2"></div>
+          </div>
+
+          <!-- Hapus Background Lokal -->
+          <div class="bg-studio-panel border border-studio-border rounded-xl p-3.5 flex flex-col gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-studio-text">Hapus Background Gratis di Browser (0 Neurons)</span>
+              <button type="button" id="resetPhotoBtn" class="text-xs font-semibold text-studio-muted hover:text-white underline cursor-pointer">Reset Foto Asli</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button type="button" id="instantRemoveBgBtn" class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-studio-teal/20 hover:bg-studio-teal/30 text-teal-200 border border-studio-teal/45 transition cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Hapus Latar Polos (Instan 0 Detik)
+              </button>
+              <button type="button" id="aiRemoveBgBtn" class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-studio-orange/20 hover:bg-studio-orange/30 text-orange-200 border border-studio-orange/45 transition cursor-pointer disabled:opacity-60">
+                <svg id="aiBgSpinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span id="aiBgBtnText">Hapus Background AI Lokal (Gratis)</span>
+              </button>
+            </div>
+            <div class="flex items-center gap-3">
+              <label for="bgToleranceSlider" class="text-xs text-studio-muted shrink-0">Toleransi Latar Polos:</label>
+              <input id="bgToleranceSlider" type="range" min="8" max="85" value="30" class="w-full accent-teal-400 cursor-pointer" />
+              <span id="bgToleranceVal" class="text-xs font-bold text-teal-300 w-7 text-right">30</span>
+            </div>
+            <div id="aiBgStatus" class="hidden text-xs text-orange-200 bg-orange-950/40 border border-orange-500/30 rounded-lg px-3 py-2"></div>
+          </div>
+
+          <!-- Presisi Posisi, Skala & Rotasi -->
+          <div class="bg-studio-panel border border-studio-border rounded-xl p-3.5 flex flex-col gap-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-studio-text">Presisi Posisi, Skala &amp; Rotasi Produk</span>
+              <button type="button" id="resetTransformBtn" class="text-xs font-semibold text-studio-teal hover:underline cursor-pointer">Reset Posisi</button>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div>
+                <div class="flex justify-between text-[11px] text-studio-muted mb-1"><span>Posisi X</span><span id="posXVal" class="text-studio-text font-semibold">0</span></div>
+                <input id="posXSlider" type="range" min="-260" max="260" value="0" class="w-full accent-teal-400 cursor-pointer" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] text-studio-muted mb-1"><span>Posisi Y</span><span id="posYVal" class="text-studio-text font-semibold">0</span></div>
+                <input id="posYSlider" type="range" min="-260" max="260" value="0" class="w-full accent-teal-400 cursor-pointer" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] text-studio-muted mb-1"><span>Skala</span><span id="scaleVal" class="text-studio-text font-semibold">100%</span></div>
+                <input id="scaleSlider" type="range" min="40" max="170" value="100" class="w-full accent-teal-400 cursor-pointer" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] text-studio-muted mb-1"><span>Rotasi</span><span id="rotVal" class="text-studio-text font-semibold">0&deg;</span></div>
+                <input id="rotSlider" type="range" min="-45" max="45" value="0" class="w-full accent-teal-400 cursor-pointer" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL 3: EDIT MANUAL DETAIL, HARGA & LAYOUT (TETAP LENGKAP) -->
+        <section class="bg-studio-card border border-studio-border rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-lg shadow-black/20">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-studio-border pb-3">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-studio-text flex items-center gap-2">
+              <span class="w-2 h-5 rounded-full bg-teal-400"></span>
+              3. Detail Produk, Harga &amp; Tata Letak (Manual / Auto AI)
+            </h2>
+            <span id="discountPreviewBadge" class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-red-600/20 text-red-300 border border-red-500/35">DISKON 40%</span>
+          </div>
+
+          <div id="feedSlideControls" class="hidden bg-studio-panel border border-studio-orange/45 rounded-xl p-3.5 flex flex-col gap-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-orange-300">Mockup Feed IG &mdash; Edit Foto &amp; Teks per Slide</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs text-studio-muted mr-1">Slide:</span>
+                <button type="button" data-slides="3" class="slide-count-btn px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer">3</button>
+                <button type="button" data-slides="4" class="slide-count-btn px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer">4</button>
+                <button type="button" data-slides="5" class="slide-count-btn px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer">5</button>
+                <button type="button" data-slides="6" class="slide-count-btn px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer">6</button>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span id="editingSlideNotice" class="text-[11px] text-teal-300 font-semibold">Sedang mengedit: Slide #1</span>
+              <button type="button" id="applyToAllSlidesBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-studio-card hover:bg-slate-700 border border-studio-border text-studio-text cursor-pointer">Samakan Data ke Semua Slide</button>
+            </div>
+          </div>
+
+          <div class="bg-studio-panel border border-studio-border rounded-xl p-3.5 flex flex-col gap-3">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-bold text-studio-text block">Tampilkan Kartu Detail Produk</span>
+                <span class="text-[11px] text-studio-muted">Menampilkan bahan, detail utama &amp; fit di samping/bawah gambar</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                <input id="showDetailToggle" type="checkbox" checked class="sr-only peer" />
+                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-studio-teal"></div>
+              </label>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-studio-muted mb-1.5">Preset Tata Letak Tengah (0 Biaya AI)</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" data-layout="split-left" class="layout-btn px-2 py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border transition cursor-pointer text-center">Split Kiri-Kanan</button>
+                <button type="button" data-layout="split-right" class="layout-btn px-2 py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border transition cursor-pointer text-center">Split Kanan-Kiri</button>
+                <button type="button" data-layout="classic-bottom" class="layout-btn px-2 py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border transition cursor-pointer text-center">Kartu Bawah Klasik</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="promoTagInput" class="block text-xs font-semibold text-studio-muted mb-1.5">Label Atas / Kode Koleksi</label>
+              <input id="promoTagInput" type="text" value="NEW ARRIVAL • KOLEKSI TERBARU" maxlength="38" placeholder="Kosongkan jika tidak perlu..." class="w-full rounded-xl bg-studio-panel border border-studio-border px-3.5 py-2.5 text-xs sm:text-sm uppercase text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+            </div>
+            <div>
+              <label for="productTitleInput" class="block text-xs font-semibold text-studio-muted mb-1.5">Nama Produk / Tajuk Utama</label>
+              <input id="productTitleInput" type="text" value="Raglan Sweatshirt Koleksi Terbaru" maxlength="55" class="w-full rounded-xl bg-studio-panel border border-studio-border px-3.5 py-2.5 text-sm text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+            </div>
+          </div>
+
+          <div>
+            <label for="taglineInput" class="block text-xs font-semibold text-studio-muted mb-1.5">Tagline Singkat (1 Baris Opsional)</label>
+            <input id="taglineInput" type="text" value="Tampil Kasual, Rapi &amp; Nyaman Setiap Hari" maxlength="64" placeholder="Kosongkan jika tidak perlu..." class="w-full rounded-xl bg-studio-panel border border-studio-border px-3.5 py-2.5 text-xs sm:text-sm text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="normalPriceInput" class="block text-xs font-semibold text-studio-muted mb-1.5">Harga Normal (Rp)</label>
+              <input id="normalPriceInput" type="number" min="0" step="100" value="249900" class="w-full rounded-xl bg-studio-panel border border-studio-border px-3.5 py-2.5 text-sm text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+            </div>
+            <div>
+              <label for="promoPriceInput" class="block text-xs font-semibold text-studio-muted mb-1.5">Harga Diskon (Rp)</label>
+              <input id="promoPriceInput" type="number" min="0" step="100" value="149900" class="w-full rounded-xl bg-studio-panel border border-studio-border px-3.5 py-2.5 text-sm text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+            </div>
+          </div>
+
+          <div id="detailFieldsBox" class="bg-studio-panel/80 border border-studio-border rounded-xl p-3.5 flex flex-col gap-3 transition-opacity">
+            <span class="text-xs font-bold text-teal-300">Keterangan Detail Produk Ringkas</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="bahanInput" class="block text-[11px] font-semibold text-studio-muted mb-1">Bahan</label>
+                <input id="bahanInput" type="text" value="Katun Fleece Lembut" maxlength="42" class="w-full rounded-xl bg-studio-card border border-studio-border px-3 py-2 text-xs text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+              </div>
+              <div>
+                <label for="infoFitInput" class="block text-[11px] font-semibold text-studio-muted mb-1">Fit / Ukuran / Catatan</label>
+                <input id="infoFitInput" type="text" value="Regular fit, nyaman harian" maxlength="48" class="w-full rounded-xl bg-studio-card border border-studio-border px-3 py-2 text-xs text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+              </div>
+            </div>
+            <div>
+              <label for="detailProdukInput" class="block text-[11px] font-semibold text-studio-muted mb-1">Detail Utama</label>
+              <input id="detailProdukInput" type="text" value="Lengan raglan kontras, jahitan rapi" maxlength="58" class="w-full rounded-xl bg-studio-card border border-studio-border px-3 py-2 text-xs text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+            </div>
+            <div class="border-t border-studio-border pt-3 flex flex-col gap-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <label class="inline-flex items-center gap-2 text-xs font-semibold text-studio-text cursor-pointer select-none">
+                  <input id="showProductColorsToggle" type="checkbox" checked class="rounded accent-teal-400 w-4 h-4 cursor-pointer" />
+                  <span>Tampilkan Titik Warna Dominan</span>
+                </label>
+                <button type="button" id="addProductColorBtn" class="text-[11px] font-semibold text-studio-teal hover:underline cursor-pointer">+ Tambah Warna</button>
+              </div>
+              <div id="productColorsEditor" class="flex flex-wrap gap-2"></div>
+            </div>
+          </div>
+
+          <div class="bg-studio-panel border border-studio-border rounded-xl p-3.5 flex flex-col gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <label class="inline-flex items-center gap-2 text-xs font-semibold text-studio-text cursor-pointer select-none">
+                <input id="showBgAccentsToggle" type="checkbox" checked class="rounded accent-teal-400 w-4 h-4 cursor-pointer" />
+                <span>Aksen Halus Latar (Ornamen Tepi Samar)</span>
+              </label>
+              <label class="inline-flex items-center gap-2 text-xs font-semibold text-studio-text cursor-pointer select-none">
+                <input id="showBottomStripToggle" type="checkbox" checked class="rounded accent-teal-400 w-4 h-4 cursor-pointer" />
+                <span>Strip Info Bawah</span>
+              </label>
+            </div>
+            <div id="bottomStripInputWrap">
+              <label for="bottomStripInput" class="block text-[11px] font-semibold text-studio-muted mb-1">Teks Strip Highlight Aman (Di Atas Footer)</label>
+              <input id="bottomStripInput" type="text" value="Tersedia di Gerai  •  Bisa Pesan via WhatsApp Shop &amp; Talk" maxlength="75" class="w-full rounded-xl bg-studio-card border border-studio-border px-3 py-2 text-xs text-studio-text focus:outline-none focus:ring-2 focus:ring-studio-teal" />
+            </div>
+          </div>
+
+          <div class="pt-1">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-semibold text-studio-muted">Memori Warna Tema Feed Pengguna (Tersimpan Otomatis)</label>
+              <span id="activeColorName" class="text-[11px] font-bold text-teal-300">Teal Studio</span>
+            </div>
+            <div id="colorSwatches" class="flex flex-wrap items-center gap-2.5"></div>
+          </div>
+        </section>
+
+        <!-- PANEL 4: KELOLA ASET TETAP -->
+        <details class="bg-studio-card border border-studio-border rounded-2xl shadow-lg shadow-black/20 group">
+          <summary class="p-4 sm:px-5 cursor-pointer list-none flex items-center justify-between gap-3 select-none">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2 h-5 rounded-full bg-slate-500 group-open:bg-studio-teal transition-colors"></span>
+              <div>
+                <h2 class="text-sm font-bold text-studio-text">Kelola Aset Tetap (Opsional Uji Coba Lokal)</h2>
+                <p class="text-[11px] text-studio-muted">Otomatis memuat dari <code class="text-orange-300">/poster-assets/</code> &amp; <code class="text-teal-300">./assets/</code></p>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-studio-muted transition-transform group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="px-4 sm:px-5 pb-4 sm:pb-5 pt-2 border-t border-studio-border flex flex-col gap-3">
+            <div id="fixedAssetsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+          </div>
+        </details>
+      </div>
+
+      <!-- KOLOM KANAN: PREVIEW KANVAS HD STICKY -->
+      <aside class="lg:col-span-5 lg:sticky lg:top-4 flex flex-col gap-4">
+        <div class="bg-studio-card border border-studio-border rounded-2xl p-4 sm:p-5 shadow-xl shadow-black/30 flex flex-col gap-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-sm font-bold text-studio-text">Preview Kanvas HD Real-Time</h2>
+              <p id="canvasMetaInfo" class="text-[11px] text-studio-muted">Export PNG: 1080 &times; 1920 px (Story 9:16)</p>
+            </div>
+            <div class="flex items-center gap-1 bg-studio-panel p-1 rounded-xl border border-studio-border">
+              <button type="button" data-ratio="9:16" class="quick-ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition cursor-pointer">9:16</button>
+              <button type="button" data-ratio="4:5" class="quick-ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition cursor-pointer">4:5</button>
+              <button type="button" data-ratio="1:1" class="quick-ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition cursor-pointer">1:1</button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px]">
+            <span id="activeModeChip" class="px-2.5 py-1 rounded-lg font-bold bg-studio-panel border border-studio-border text-teal-300">Poster Katalog &bull; 9:16</span>
+            <span class="px-2.5 py-1 rounded-lg font-semibold bg-studio-teal/10 border border-studio-teal/30 text-teal-200">0 Biaya AI &bull; Canvas 2D HD</span>
+          </div>
+
+          <div class="flex justify-center items-center bg-studio-bg/90 rounded-2xl p-3 border border-studio-border/80">
+            <canvas id="mainCanvas" width="1080" height="1920" class="w-full max-w-[360px] h-auto rounded-xl shadow-2xl shadow-black/60 border border-white/10 block"></canvas>
+          </div>
+
+          <div id="feedStripSection" class="hidden flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-orange-300">Strip Slide Carousel IG</span>
+              <span id="activeSlideLabel" class="text-[11px] text-studio-muted">Slide 1 dari 4</span>
+            </div>
+            <div id="slideThumbStrip" class="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-3 xl:grid-cols-6 gap-2"></div>
+          </div>
+
+          <div class="flex flex-col gap-2 pt-1">
+            <button type="button" id="downloadSingleBtn" class="w-full py-3.5 px-4 rounded-xl font-extrabold text-sm bg-gradient-to-r from-studio-teal to-teal-500 hover:from-teal-400 hover:to-teal-300 text-slate-950 shadow-lg shadow-teal-950/50 transition flex items-center justify-center gap-2 cursor-pointer">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span id="downloadSingleText">Download PNG HD (1080&times;1920)</span>
+            </button>
+            <button type="button" id="downloadAllSlidesBtn" class="hidden w-full py-3 px-4 rounded-xl font-extrabold text-xs sm:text-sm bg-studio-orange hover:bg-orange-400 text-slate-950 shadow-lg shadow-orange-950/40 transition flex items-center justify-center gap-2 cursor-pointer">
+              <span id="downloadAllSlidesText">Download Semua Slide (Batch)</span>
+            </button>
+          </div>
+
+          <div class="rounded-xl bg-studio-panel/70 border border-studio-border p-2.5 text-[11px] text-studio-muted text-center">
+            Identitas tetap <strong class="text-red-400">Feel good.</strong> &bull; <strong class="text-studio-text">Shop &amp; talk 0811-8118-8888</strong> &bull; <strong class="text-studio-text">Matahari Manhattan Times Square Medan</strong>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const RATIO_SPECS = {
+        '9:16': { w: 1080, h: 1920, slug: '9x16', desc: '1080 × 1920 px (Story 9:16)' },
+        '4:5':  { w: 1080, h: 1350, slug: '4x5',  desc: '1080 × 1350 px (Feed 4:5)' },
+        '1:1':  { w: 1080, h: 1080, slug: '1x1',  desc: '1080 × 1080 px (Square 1:1)' }
+      };
+
+      const CATEGORY_RULES = {
+        baju_cewek: {
+          label: 'Pakaian Wanita', badge: 'Manekin Polos Cewek', mannequinKey: 'manekinCewek',
+          allowMannequin: true, allowHand: false, sizes: ['S', 'M', 'L', 'XL'], sizeTitle: 'UKURAN TERSEDIA',
+          noticeType: null, noticeText: '',
+          defaultTag: 'NEW ARRIVAL • KOLEKSI WANITA',
+          defaultTitle: 'Koleksi Atasan Wanita Terbaru',
+          defaultTagline: 'Tampil Stylish, Rapi & Nyaman Setiap Hari',
+          defaultBahan: 'Katun Fleece Lembut', defaultDetail: 'Potongan rapi, nyaman dipadukan', defaultFit: 'Regular fit, nyaman harian'
+        },
+        baju_cowok: {
+          label: 'Pakaian Pria', badge: 'Manekin Polos Cowok', mannequinKey: 'manekinCowok',
+          allowMannequin: true, allowHand: false, sizes: ['S', 'M', 'L', 'XL', 'XXL'], sizeTitle: 'UKURAN TERSEDIA',
+          noticeType: null, noticeText: '',
+          defaultTag: 'NEW ARRIVAL • KOLEKSI PRIA',
+          defaultTitle: 'Koleksi Pakaian Pria Terbaru',
+          defaultTagline: 'Tampil Rapi, Kasual & Nyaman Setiap Hari',
+          defaultBahan: 'Katun Combed Premium', defaultDetail: 'Potongan tegas, adem & menyerap keringat', defaultFit: 'Regular fit, cocok kasual'
+        },
+        baju_anak: {
+          label: 'Pakaian Anak', badge: 'Manekin Polos Anak', mannequinKey: 'manekinAnak',
+          allowMannequin: true, allowHand: false, sizes: ['2T', '4T', '6T', '8T'], sizeTitle: 'UKURAN ANAK',
+          noticeType: null, noticeText: '',
+          defaultTag: 'NEW ARRIVAL • KOLEKSI ANAK',
+          defaultTitle: 'Koleksi Pakaian Anak Terbaru',
+          defaultTagline: 'Bahan Lembut & Nyaman untuk Aktivitas Anak',
+          defaultBahan: 'Katun Halus Ramah Kulit', defaultDetail: 'Bahan adem, jahitan lembut & awet', defaultFit: 'Relaxed fit, nyaman bergerak'
+        },
+        sepatu: {
+          label: 'Sepatu', badge: 'Sepatu: Tanpa Manekin', mannequinKey: null,
+          allowMannequin: false, allowHand: false, sizes: ['36', '37', '38', '39', '40', '41', '42'], sizeTitle: 'NOMOR SEPATU TERSEDIA',
+          noticeType: 'orange',
+          noticeText: 'Sepatu: Tanpa Manekin & Tanpa Tangan. Nomor sepatu otomatis 36–42.',
+          defaultTag: 'NEW ARRIVAL • KOLEKSI SEPATU',
+          defaultTitle: 'Koleksi Sepatu Kasual Terbaru',
+          defaultTagline: 'Nyaman Melangkah, Gaya Kasual Seharian',
+          defaultBahan: 'Synthetic Leather & Suede', defaultDetail: 'Sol karet anti slip, insole empuk', defaultFit: 'Ringan & nyaman dipakai harian'
+        },
+        tas: {
+          label: 'Tas', badge: 'Tas • Bisa Dipegang Tangan', mannequinKey: null,
+          allowMannequin: false, allowHand: true, sizes: ['Mini', 'Medium', 'Large', 'All Size'], sizeTitle: 'UKURAN TAS',
+          noticeType: 'teal',
+          noticeText: 'Tas: Tanpa Manekin, mendukung Mode Produk Dipegang (Tangan Acuan).',
+          defaultTag: 'NEW ARRIVAL • KOLEKSI TAS',
+          defaultTitle: 'Koleksi Tas Pilihan Terbaru',
+          defaultTagline: 'Ringkas, Rapi & Elegan untuk Harian',
+          defaultBahan: 'Synthetic Leather Premium', defaultDetail: 'Kompartemen luas, resleting kuat', defaultFit: 'Ringkas, muat kebutuhan harian'
+        },
+        parfum_kosmetik: {
+          label: 'Parfum & Kosmetik', badge: 'Parfum/Kosmetik • Dipegang', mannequinKey: null,
+          allowMannequin: false, allowHand: true, sizes: ['30 ml', '50 ml', '100 ml'], sizeTitle: 'UKURAN / VOLUME',
+          noticeType: 'teal',
+          noticeText: 'Parfum & Kosmetik: Tanpa Manekin, mendukung Mode Produk Dipegang (Tangan Acuan).',
+          defaultTag: 'KOLEKSI WEWANGIAN • PILIHAN',
+          defaultTitle: 'Eau de Parfum Koleksi Pilihan',
+          defaultTagline: 'Aroma Elegan & Segar Sepanjang Hari',
+          defaultBahan: 'Eau de Parfum • Aroma Segar', defaultDetail: 'Kemasan elegan, semprotan merata & halus', defaultFit: 'Aroma tahan lama untuk harian'
+        }
+      };
+
+      const THEME_PALETTE = [
+        { id: 'teal',       name: 'Teal Studio',       primary: '#0f766e', soft: '#ccfbf1', dark: '#115e59' },
+        { id: 'terracotta', name: 'Terracotta Hangat', primary: '#b45309', soft: '#fef3c7', dark: '#92400e' },
+        { id: 'olive',      name: 'Olive Klasik',      primary: '#3f6212', soft: '#ecfccb', dark: '#365314' },
+        { id: 'navy',       name: 'Navy Elegan',       primary: '#1e3a8a', soft: '#dbeafe', dark: '#172554' },
+        { id: 'crimson',    name: 'Crimson Promo',     primary: '#be123c', soft: '#ffe4e6', dark: '#9f1239' },
+        { id: 'espresso',   name: 'Warm Espresso',     primary: '#78350f', soft: '#ffedd5', dark: '#451a03' },
+        { id: 'slate',      name: 'Slate Minimalis',   primary: '#334155', soft: '#e2e8f0', dark: '#1e293b' },
+        { id: 'plum',       name: 'Plum Modern',       primary: '#6b21a8', soft: '#f3e8ff', dark: '#581c87' }
+      ];
+
+      const FIXED_ASSET_DEFS = [
+        { key: 'feelGood', label: 'Header Feel good.', paths: ['/poster-assets/feel-good-logo.jpg', '../poster-assets/feel-good-logo.jpg', './assets/feel-good-logo.jpg', './assets/feel-good-logo.png'], stripWhite: false, trim: false },
+        { key: 'footerStrip', label: 'Footer Shop & talk', paths: ['/poster-assets/footer-shop-talk.jpg', '../poster-assets/footer-shop-talk.jpg', '/poster-assets/footer-shop-talk.png', '../poster-assets/footer-shop-talk.png', './assets/footer-shop-talk.jpg'], stripWhite: true, trim: true },
+        { key: 'manekinCewek', label: 'Manekin Polos Cewek', paths: ['./assets/manekin-cewek.jpeg', './assets/manekin-cewek.jpg', '/brandfeed/assets/manekin-cewek.jpeg', '/brandfeed/assets/manekin-cewek.jpg'], stripWhite: true, trim: true },
+        { key: 'manekinCowok', label: 'Manekin Polos Cowok', paths: ['./assets/manekin-cowok.jpeg', './assets/manekin-cowok.jpg', '/brandfeed/assets/manekin-cowok.jpeg', '/brandfeed/assets/manekin-cowok.jpg'], stripWhite: true, trim: true },
+        { key: 'manekinAnak', label: 'Manekin Polos Anak', paths: ['./assets/manekin-anak.jpeg', './assets/manekin-anak.jpg', '/brandfeed/assets/manekin-anak.jpeg', '/brandfeed/assets/manekin-anak.jpg'], stripWhite: true, trim: true },
+        { key: 'tanganAcuan', label: 'Tangan Acuan', paths: ['./assets/tangan-acuan.jpeg', './assets/tangan-acuan.jpg', '/brandfeed/assets/tangan-acuan.jpeg', '/brandfeed/assets/tangan-acuan.jpg'], stripWhite: true, trim: true }
+      ];
+
+      const DEFAULT_SLIDE_TAGS = [
+        'NEW ARRIVAL • KOLEKSI TERBARU', 'HARGA SPESIAL • PROMO GERAI', 'DETAIL PRODUK • BAHAN PILIHAN',
+        'BEST SELLER • FAVORIT', 'STOK TERBATAS • SEGERA ORDER', 'ORDER MUDAH • SHOP & TALK'
+      ];
+
+      function createProductUnit(overrides = {}) {
+        return {
+          title: overrides.title || 'Raglan Sweatshirt Koleksi Terbaru',
+          promoTag: overrides.promoTag !== undefined ? overrides.promoTag : 'NEW ARRIVAL • KOLEKSI TERBARU',
+          tagline: overrides.tagline !== undefined ? overrides.tagline : 'Tampil Kasual, Rapi & Nyaman Setiap Hari',
+          normalPrice: overrides.normalPrice !== undefined ? overrides.normalPrice : 249900,
+          promoPrice: overrides.promoPrice !== undefined ? overrides.promoPrice : 149900,
+          bahan: overrides.bahan || 'Katun Fleece Lembut',
+          detail: overrides.detail || 'Lengan raglan kontras, jahitan rapi',
+          fit: overrides.fit || 'Regular fit, nyaman harian',
+          productColors: overrides.productColors || [{ nama: 'Krem', hex: '#ece6da' }, { nama: 'Teal Tua', hex: '#0f766e' }],
+          originalImage: overrides.originalImage || null,
+          processedImage: overrides.processedImage || null,
+          originalBlob: overrides.originalBlob || null,
+          bottomImage: null,
+          bottomName: '',
+          aiTryOnApplied: false,
+          uploadName: overrides.uploadName || 'Contoh aktif siap diedit',
+          posX: 0, posY: 0, scale: 100, rotation: 0
+        };
+      }
+
+      const state = {
+        mode: 'catalog',
+        ratio: '9:16',
+        category: 'baju_cewek',
+        brandPreset: 'NEVADA',
+        brandText: 'NEVADA',
+        layout: 'split-left',
+        mannequinFraming: 'torso',
+        showDetail: true,
+        showSizes: true,
+        showProductColors: true,
+        showBgAccents: true,
+        showBottomStrip: true,
+        bottomStripText: 'Tersedia di Gerai  •  Bisa Pesan via WhatsApp Shop & Talk',
+        colorIndex: 0,
+        activeSizes: ['S', 'M', 'L', 'XL'],
+        bgTolerance: 30,
+        mainItem: createProductUnit(),
+        slideCount: 4,
+        activeSlide: 0,
+        slides: DEFAULT_SLIDE_TAGS.map((tag) => createProductUnit({ promoTag: tag })),
+        assets: { feelGood: null, footerStrip: null, manekinCewek: null, manekinCowok: null, manekinAnak: null, tanganAcuan: null },
+        assetSource: { feelGood: 'fallback', footerStrip: 'fallback', manekinCewek: 'fallback', manekinCowok: 'fallback', manekinAnak: 'fallback', tanganAcuan: 'fallback' },
+        quota: {
+          source: 'local-estimate',
+          limit: 10000,
+          used: 0,
+          totalRequests: 0,
+          breakdown: [],
+          downloads: { today: 0, total: 0, scope: 'local' },
+          resetAtUtc: null,
+          lastSync: ''
+        }
+      };
+
+      let paperPatternCanvas = null;
+
+      const dom = {
+        canvas: document.getElementById('mainCanvas'),
+        studioStatusPill: document.getElementById('studioStatusPill'),
+        studioStatusText: document.getElementById('studioStatusText'),
+        cfInfoModal: document.getElementById('cfInfoModal'),
+        openCfInfoBtn: document.getElementById('openCfInfoBtn'),
+        closeCfInfoBtn: document.getElementById('closeCfInfoBtn'),
+        closeCfInfoFooterBtn: document.getElementById('closeCfInfoFooterBtn'),
+        quotaSourceBadge: document.getElementById('quotaSourceBadge'),
+        quotaSourceDot: document.getElementById('quotaSourceDot'),
+        quotaSourceLabel: document.getElementById('quotaSourceLabel'),
+        quotaRemainingText: document.getElementById('quotaRemainingText'),
+        downloadStatsBadge: document.getElementById('downloadStatsBadge'),
+        quotaEstTryOnText: document.getElementById('quotaEstTryOnText'),
+        quotaResetCountdown: document.getElementById('quotaResetCountdown'),
+        quotaProgressBar: document.getElementById('quotaProgressBar'),
+        quotaSubInfo: document.getElementById('quotaSubInfo'),
+        quotaLastSyncText: document.getElementById('quotaLastSyncText'),
+        quotaRefreshBtn: document.getElementById('quotaRefreshBtn'),
+        quotaBreakdownWrap: document.getElementById('quotaBreakdownWrap'),
+        quotaBreakdownList: document.getElementById('quotaBreakdownList'),
+        modeTabs: document.querySelectorAll('.mode-tab'),
+        tabHand: document.getElementById('tabHand'),
+        handTabSub: document.getElementById('handTabSub'),
+        handTabDesc: document.getElementById('handTabDesc'),
+        tabMannequin: document.getElementById('tabMannequin'),
+        mannequinTabSub: document.getElementById('mannequinTabSub'),
+        mannequinTabDesc: document.getElementById('mannequinTabDesc'),
+        ratioBtns: document.querySelectorAll('.ratio-btn'),
+        quickRatioBtns: document.querySelectorAll('.quick-ratio-btn'),
+        categorySelect: document.getElementById('categorySelect'),
+        ruleStatusBadge: document.getElementById('ruleStatusBadge'),
+        categoryRuleNotice: document.getElementById('categoryRuleNotice'),
+        brandPresetSelect: document.getElementById('brandPresetSelect'),
+        brandTextInput: document.getElementById('brandTextInput'),
+        showSizesToggle: document.getElementById('showSizesToggle'),
+        selectAllSizesBtn: document.getElementById('selectAllSizesBtn'),
+        sizeChipsContainer: document.getElementById('sizeChipsContainer'),
+        sampleShirtBtn: document.getElementById('sampleShirtBtn'),
+        sampleShoeBtn: document.getElementById('sampleShoeBtn'),
+        samplePerfumeBtn: document.getElementById('samplePerfumeBtn'),
+        dropZone: document.getElementById('dropZone'),
+        dropZoneHeading: document.getElementById('dropZoneHeading'),
+        productFileInput: document.getElementById('productFileInput'),
+        uploadFileName: document.getElementById('uploadFileName'),
+        aiCleanBtn: document.getElementById('aiCleanBtn'),
+        aiCleanSpinner: document.getElementById('aiCleanSpinner'),
+        aiCleanBtnText: document.getElementById('aiCleanBtnText'),
+        aiCleanStatus: document.getElementById('aiCleanStatus'),
+        aiTryOnBox: document.getElementById('aiTryOnBox'),
+        aiTryOnHeading: document.getElementById('aiTryOnHeading'),
+        mannequinOptionsWrap: document.getElementById('mannequinOptionsWrap'),
+        framingBtns: document.querySelectorAll('.framing-btn'),
+        bottomFileInput: document.getElementById('bottomFileInput'),
+        bottomUploadName: document.getElementById('bottomUploadName'),
+        clearBottomBtn: document.getElementById('clearBottomBtn'),
+        aiTryOnBtn: document.getElementById('aiTryOnBtn'),
+        aiTryOnSpinner: document.getElementById('aiTryOnSpinner'),
+        aiTryOnBtnText: document.getElementById('aiTryOnBtnText'),
+        aiTryOnStatus: document.getElementById('aiTryOnStatus'),
+        autoAnalyzeCheck: document.getElementById('autoAnalyzeCheck'),
+        aiAnalyzeBtn: document.getElementById('aiAnalyzeBtn'),
+        aiAnalyzeSpinner: document.getElementById('aiAnalyzeSpinner'),
+        aiAnalyzeBtnText: document.getElementById('aiAnalyzeBtnText'),
+        aiAnalyzeStatus: document.getElementById('aiAnalyzeStatus'),
+        offlineQuickFillBtn: document.getElementById('offlineQuickFillBtn'),
+        resetPhotoBtn: document.getElementById('resetPhotoBtn'),
+        instantRemoveBgBtn: document.getElementById('instantRemoveBgBtn'),
+        aiRemoveBgBtn: document.getElementById('aiRemoveBgBtn'),
+        aiBgSpinner: document.getElementById('aiBgSpinner'),
+        aiBgBtnText: document.getElementById('aiBgBtnText'),
+        aiBgStatus: document.getElementById('aiBgStatus'),
+        bgToleranceSlider: document.getElementById('bgToleranceSlider'),
+        bgToleranceVal: document.getElementById('bgToleranceVal'),
+        posXSlider: document.getElementById('posXSlider'),
+        posYSlider: document.getElementById('posYSlider'),
+        scaleSlider: document.getElementById('scaleSlider'),
+        rotSlider: document.getElementById('rotSlider'),
+        posXVal: document.getElementById('posXVal'),
+        posYVal: document.getElementById('posYVal'),
+        scaleVal: document.getElementById('scaleVal'),
+        rotVal: document.getElementById('rotVal'),
+        resetTransformBtn: document.getElementById('resetTransformBtn'),
+        feedSlideControls: document.getElementById('feedSlideControls'),
+        slideCountBtns: document.querySelectorAll('.slide-count-btn'),
+        editingSlideNotice: document.getElementById('editingSlideNotice'),
+        applyToAllSlidesBtn: document.getElementById('applyToAllSlidesBtn'),
+        showDetailToggle: document.getElementById('showDetailToggle'),
+        detailFieldsBox: document.getElementById('detailFieldsBox'),
+        layoutBtns: document.querySelectorAll('.layout-btn'),
+        productTitleInput: document.getElementById('productTitleInput'),
+        promoTagInput: document.getElementById('promoTagInput'),
+        taglineInput: document.getElementById('taglineInput'),
+        normalPriceInput: document.getElementById('normalPriceInput'),
+        promoPriceInput: document.getElementById('promoPriceInput'),
+        discountPreviewBadge: document.getElementById('discountPreviewBadge'),
+        bahanInput: document.getElementById('bahanInput'),
+        detailProdukInput: document.getElementById('detailProdukInput'),
+        infoFitInput: document.getElementById('infoFitInput'),
+        showProductColorsToggle: document.getElementById('showProductColorsToggle'),
+        addProductColorBtn: document.getElementById('addProductColorBtn'),
+        productColorsEditor: document.getElementById('productColorsEditor'),
+        showBgAccentsToggle: document.getElementById('showBgAccentsToggle'),
+        showBottomStripToggle: document.getElementById('showBottomStripToggle'),
+        bottomStripInputWrap: document.getElementById('bottomStripInputWrap'),
+        bottomStripInput: document.getElementById('bottomStripInput'),
+        colorSwatches: document.getElementById('colorSwatches'),
+        activeColorName: document.getElementById('activeColorName'),
+        fixedAssetsGrid: document.getElementById('fixedAssetsGrid'),
+        canvasMetaInfo: document.getElementById('canvasMetaInfo'),
+        activeModeChip: document.getElementById('activeModeChip'),
+        feedStripSection: document.getElementById('feedStripSection'),
+        activeSlideLabel: document.getElementById('activeSlideLabel'),
+        slideThumbStrip: document.getElementById('slideThumbStrip'),
+        downloadSingleBtn: document.getElementById('downloadSingleBtn'),
+        downloadSingleText: document.getElementById('downloadSingleText'),
+        downloadAllSlidesBtn: document.getElementById('downloadAllSlidesBtn'),
+        downloadAllSlidesText: document.getElementById('downloadAllSlidesText'),
+        toastContainer: document.getElementById('toastContainer')
+      };
+
+      // =========================================================================
+      // MONITOR KUOTA WORKERS AI REAL-TIME, RINCIAN & HITUNGAN DOWNLOAD
+      // =========================================================================
+      const QUOTA_STORAGE_KEY = 'brandfeed_quota_utc_v1';
+      const QUOTA_ACTIONS_KEY = 'brandfeed_quota_actions_utc_v1';
+      const DOWNLOAD_STATS_KEY = 'brandfeed_downloads_v1';
+
+      function getUtcTodayString() {
+        return new Date().toISOString().slice(0, 10);
+      }
+
+      function loadLocalQuota() {
+        const today = getUtcTodayString();
+        try {
+          const raw = localStorage.getItem(QUOTA_STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed.dateUtc === today) {
+              return Math.max(0, Math.min(state.quota.limit, Number(parsed.used) || 0));
+            }
+          }
+        } catch (_) {}
+        return 0;
+      }
+
+      function saveLocalQuota(used) {
+        try {
+          localStorage.setItem(QUOTA_STORAGE_KEY, JSON.stringify({
+            dateUtc: getUtcTodayString(),
+            used: Math.max(0, Math.min(state.quota.limit, Math.round(used)))
+          }));
+        } catch (_) {}
+      }
+
+      function loadLocalActionBreakdown() {
+        const today = getUtcTodayString();
+        const empty = { clean: { n: 0, c: 0 }, tryon: { n: 0, c: 0 }, analyze: { n: 0, c: 0 } };
+        try {
+          const raw = localStorage.getItem(QUOTA_ACTIONS_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed.dateUtc === today && parsed.actions) {
+              return {
+                clean: parsed.actions.clean || { n: 0, c: 0 },
+                tryon: parsed.actions.tryon || { n: 0, c: 0 },
+                analyze: parsed.actions.analyze || { n: 0, c: 0 }
+              };
+            }
+          }
+        } catch (_) {}
+        return empty;
+      }
+
+      function saveLocalActionUsage(actionType, neurons) {
+        if (!actionType) return;
+        const actions = loadLocalActionBreakdown();
+        if (actions[actionType]) {
+          actions[actionType].n += Math.max(0, Math.round(Number(neurons) || 0));
+          actions[actionType].c += 1;
+        }
+        try {
+          localStorage.setItem(QUOTA_ACTIONS_KEY, JSON.stringify({
+            dateUtc: getUtcTodayString(),
+            actions
+          }));
+        } catch (_) {}
+      }
+
+      function loadLocalDownloads() {
+        const today = getUtcTodayString();
+        try {
+          const raw = localStorage.getItem(DOWNLOAD_STATS_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            return {
+              today: parsed.dateUtc === today ? (Number(parsed.today) || 0) : 0,
+              total: Number(parsed.total) || 0,
+              scope: 'local'
+            };
+          }
+        } catch (_) {}
+        return { today: 0, total: 0, scope: 'local' };
+      }
+
+      function saveLocalDownloads(todayCount, totalCount) {
+        try {
+          localStorage.setItem(DOWNLOAD_STATS_KEY, JSON.stringify({
+            dateUtc: getUtcTodayString(),
+            today: Math.max(0, Math.round(todayCount)),
+            total: Math.max(0, Math.round(totalCount))
+          }));
+        } catch (_) {}
+      }
+
+      function recordDownloadCount(amount = 1) {
+        const inc = Math.max(1, Math.round(Number(amount) || 1));
+        const local = loadLocalDownloads();
+        const nextToday = Math.max(local.today, state.quota.downloads.today || 0) + inc;
+        const nextTotal = Math.max(local.total, state.quota.downloads.total || 0) + inc;
+        saveLocalDownloads(nextToday, nextTotal);
+        state.quota.downloads.today = nextToday;
+        state.quota.downloads.total = nextTotal;
+        syncQuotaUI();
+
+        fetch('/api/quota', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'download', count: inc })
+        })
+          .then((r) => (r.ok ? r.json() : null))
+          .then((data) => {
+            if (data?.downloads?.scope === 'global') {
+              state.quota.downloads = {
+                scope: 'global',
+                today: Number(data.downloads.today) || nextToday,
+                total: Number(data.downloads.total) || nextTotal
+              };
+              saveLocalDownloads(state.quota.downloads.today, state.quota.downloads.total);
+              syncQuotaUI();
+            }
+          })
+          .catch(() => {});
+      }
+
+      function recordLocalQuotaUsage(neurons, exhausted = false, actionType = null) {
+        if (actionType && !exhausted) {
+          saveLocalActionUsage(actionType, neurons);
+        }
+        const prev = loadLocalQuota();
+        const next = exhausted ? state.quota.limit : Math.min(state.quota.limit, prev + (Number(neurons) || 0));
+        saveLocalQuota(next);
+        state.quota.used = state.quota.source === 'cloudflare-live'
+          ? Math.min(state.quota.limit, Math.max(state.quota.used + (Number(neurons) || 0), next))
+          : next;
+        if (exhausted) state.quota.used = state.quota.limit;
+        syncQuotaUI();
+      }
+
+      function formatCountdownToReset() {
+        const now = new Date();
+        const reset = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
+        const diffMs = Math.max(0, reset.getTime() - now.getTime());
+        const hrs = Math.floor(diffMs / 3600000);
+        const mins = Math.floor((diffMs % 3600000) / 60000);
+        return `Reset ${hrs}j ${mins}m lagi (07:00 WIB)`;
+      }
+
+      function renderQuotaBreakdown() {
+        dom.quotaBreakdownList.innerHTML = '';
+
+        // Prioritaskan rincian resmi Live Cloudflare; jika kosong gunakan catatan fitur lokal
+        let items = Array.isArray(state.quota.breakdown) && state.quota.breakdown.length
+          ? state.quota.breakdown
+          : [];
+
+        if (!items.length) {
+          const act = loadLocalActionBreakdown();
+          const localRows = [
+            { key: 'tryon', label: 'AI Try-On Manekin/Tangan', neurons: act.tryon.n, requests: act.tryon.c },
+            { key: 'clean', label: 'AI Rapikan Foto', neurons: act.clean.n, requests: act.clean.c },
+            { key: 'analyze', label: 'AI Vision Analisa', neurons: act.analyze.n, requests: act.analyze.c }
+          ].filter((r) => r.neurons > 0 || r.requests > 0);
+          items = localRows;
+        }
+
+        if (!items.length) {
+          const empty = document.createElement('span');
+          empty.className = 'text-studio-muted/80';
+          empty.textContent = state.quota.used > 0
+            ? `Total ${state.quota.used.toLocaleString('id-ID')} Neurons terpakai hari ini (klik Refresh untuk sinkron rincian model).`
+            : 'Belum ada pemakaian AI hari ini (0 Neurons).';
+          dom.quotaBreakdownList.appendChild(empty);
+          return;
+        }
+
+        const pillStyles = {
+          image_gen: 'bg-purple-500/15 border-purple-400/35 text-purple-200',
+          tryon: 'bg-purple-500/15 border-purple-400/35 text-purple-200',
+          clean: 'bg-sky-500/15 border-sky-400/35 text-sky-200',
+          vision_ocr: 'bg-teal-500/15 border-teal-400/35 text-teal-200',
+          analyze: 'bg-teal-500/15 border-teal-400/35 text-teal-200'
+        };
+
+        items.forEach((row) => {
+          const badge = document.createElement('span');
+          const style = pillStyles[row.key] || 'bg-studio-card border-studio-border text-studio-text';
+          badge.className = `inline-flex items-center gap-1 px-2 py-0.5 rounded-md border font-semibold ${style}`;
+          const reqPart = row.requests > 0 ? ` (${row.requests}×)` : '';
+          const pctPart = row.pct ? ` • ${row.pct}%` : '';
+          badge.textContent = `${row.label}: ${Number(row.neurons || 0).toLocaleString('id-ID')} Neurons${reqPart}${pctPart}`;
+          dom.quotaBreakdownList.appendChild(badge);
+        });
+      }
+
+      function syncQuotaUI() {
+        const limit = state.quota.limit || 10000;
+        const used = Math.max(0, Math.min(limit, Math.round(state.quota.used || 0)));
+        const remaining = Math.max(0, limit - used);
+        const pctLeft = Math.round((remaining / limit) * 100);
+        const estTryOn = Math.floor(remaining / 188);
+
+        dom.quotaRemainingText.textContent = remaining.toLocaleString('id-ID');
+        dom.quotaEstTryOnText.textContent = `±${estTryOn}× AI Try-On`;
+        dom.quotaResetCountdown.textContent = formatCountdownToReset();
+        dom.quotaProgressBar.style.width = `${pctLeft}%`;
+
+        const dl = state.quota.downloads || { today: 0, total: 0, scope: 'local' };
+        const scopeTag = dl.scope === 'global' ? ' Global' : '';
+        dom.downloadStatsBadge.textContent = `Download${scopeTag}: ${dl.today.toLocaleString('id-ID')}× hari ini (Total ${dl.total.toLocaleString('id-ID')}×)`;
+
+        if (pctLeft <= 15) {
+          dom.quotaProgressBar.className = 'h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-300';
+          dom.quotaRemainingText.className = 'text-red-400';
+        } else if (pctLeft <= 40) {
+          dom.quotaProgressBar.className = 'h-full bg-gradient-to-r from-orange-400 to-amber-400 transition-all duration-300';
+          dom.quotaRemainingText.className = 'text-orange-300';
+        } else {
+          dom.quotaProgressBar.className = 'h-full bg-gradient-to-r from-studio-teal to-emerald-400 transition-all duration-300';
+          dom.quotaRemainingText.className = 'text-teal-300';
+        }
+
+        if (state.quota.source === 'cloudflare-live') {
+          dom.quotaSourceLabel.textContent = 'Live Cloudflare';
+          dom.quotaSourceDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+          dom.quotaSourceBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-400/35';
+        } else {
+          dom.quotaSourceLabel.textContent = 'Estimasi Real-Time';
+          dom.quotaSourceDot.className = 'w-1.5 h-1.5 rounded-full bg-studio-teal';
+          dom.quotaSourceBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-studio-teal/15 text-teal-300 border border-studio-teal/35';
+        }
+
+        const reqSummary = state.quota.totalRequests > 0
+          ? ` (${state.quota.totalRequests.toLocaleString('id-ID')}× proses AI)`
+          : '';
+        dom.quotaSubInfo.textContent = `Terpakai hari ini: ${used.toLocaleString('id-ID')} Neurons${reqSummary} • Desain poster & hapus BG lokal: 0 Neurons (Unlimited).`;
+        dom.quotaLastSyncText.textContent = state.quota.lastSync ? `Update: ${state.quota.lastSync}` : '';
+        renderQuotaBreakdown();
+      }
+
+      async function fetchLiveQuota(silent = true) {
+        try {
+          const res = await fetch('/api/quota', { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            state.quota.limit = Number(data.limitNeurons) || 10000;
+            if (data.source === 'cloudflare-live' && typeof data.usedNeurons === 'number') {
+              state.quota.source = 'cloudflare-live';
+              state.quota.used = data.usedNeurons;
+              state.quota.totalRequests = Number(data.totalRequests) || 0;
+              state.quota.breakdown = Array.isArray(data.breakdown) ? data.breakdown : [];
+              saveLocalQuota(data.usedNeurons);
+            } else {
+              state.quota.source = 'local-estimate';
+              state.quota.used = loadLocalQuota();
+              state.quota.breakdown = [];
+            }
+
+            if (data.downloads && data.downloads.scope === 'global') {
+              state.quota.downloads = {
+                scope: 'global',
+                today: Number(data.downloads.today) || 0,
+                total: Number(data.downloads.total) || 0
+              };
+            } else {
+              state.quota.downloads = loadLocalDownloads();
+            }
+
+            const now = new Date();
+            state.quota.lastSync = now.toTimeString().slice(0, 5) + ' WIB';
+            syncQuotaUI();
+            if (!silent) showToast('Data kuota & rincian Cloudflare diperbarui.', 'success');
+            return;
+          }
+        } catch (_) {}
+        state.quota.source = 'local-estimate';
+        state.quota.used = loadLocalQuota();
+        state.quota.downloads = loadLocalDownloads();
+        syncQuotaUI();
+      }
+
+      function formatCountdownToReset() {
+        const now = new Date();
+        const reset = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
+        const diffMs = Math.max(0, reset.getTime() - now.getTime());
+        const hrs = Math.floor(diffMs / 3600000);
+        const mins = Math.floor((diffMs % 3600000) / 60000);
+        return `Reset ${hrs}j ${mins}m lagi (07:00 WIB)`;
+      }
+
+      function syncQuotaUI() {
+        const limit = state.quota.limit || 10000;
+        const used = Math.max(0, Math.min(limit, Math.round(state.quota.used || 0)));
+        const remaining = Math.max(0, limit - used);
+        const pctLeft = Math.round((remaining / limit) * 100);
+        const estTryOn = Math.floor(remaining / 188);
+
+        dom.quotaRemainingText.textContent = remaining.toLocaleString('id-ID');
+        dom.quotaEstTryOnText.textContent = `±${estTryOn}× AI Try-On`;
+        dom.quotaResetCountdown.textContent = formatCountdownToReset();
+        dom.quotaProgressBar.style.width = `${pctLeft}%`;
+
+        if (pctLeft <= 15) {
+          dom.quotaProgressBar.className = 'h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-300';
+          dom.quotaRemainingText.className = 'text-red-400';
+        } else if (pctLeft <= 40) {
+          dom.quotaProgressBar.className = 'h-full bg-gradient-to-r from-orange-400 to-amber-400 transition-all duration-300';
+          dom.quotaRemainingText.className = 'text-orange-300';
+        } else {
+          dom.quotaProgressBar.className = 'h-full bg-gradient-to-r from-studio-teal to-emerald-400 transition-all duration-300';
+          dom.quotaRemainingText.className = 'text-teal-300';
+        }
+
+        if (state.quota.source === 'cloudflare-live') {
+          dom.quotaSourceLabel.textContent = 'Live Cloudflare';
+          dom.quotaSourceDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+          dom.quotaSourceBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-400/35';
+        } else {
+          dom.quotaSourceLabel.textContent = 'Estimasi Real-Time';
+          dom.quotaSourceDot.className = 'w-1.5 h-1.5 rounded-full bg-studio-teal';
+          dom.quotaSourceBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-studio-teal/15 text-teal-300 border border-studio-teal/35';
+        }
+
+        dom.quotaSubInfo.textContent = `Terpakai hari ini: ${used.toLocaleString('id-ID')} Neurons • Desain poster & hapus BG lokal: 0 Neurons (Unlimited).`;
+        dom.quotaLastSyncText.textContent = state.quota.lastSync ? `Update: ${state.quota.lastSync}` : '';
+      }
+
+      async function fetchLiveQuota(silent = true) {
+        try {
+          const res = await fetch('/api/quota', { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            state.quota.limit = Number(data.limitNeurons) || 10000;
+            if (data.source === 'cloudflare-live' && typeof data.usedNeurons === 'number') {
+              state.quota.source = 'cloudflare-live';
+              state.quota.used = data.usedNeurons;
+              saveLocalQuota(data.usedNeurons);
+            } else {
+              state.quota.source = 'local-estimate';
+              state.quota.used = loadLocalQuota();
+            }
+            const now = new Date();
+            state.quota.lastSync = now.toTimeString().slice(0, 5) + ' WIB';
+            syncQuotaUI();
+            if (!silent) showToast('Status kuota AI diperbarui.', 'success');
+            return;
+          }
+        } catch (_) {}
+        state.quota.source = 'local-estimate';
+        state.quota.used = loadLocalQuota();
+        syncQuotaUI();
+      }
+
+      // =========================================================================
+      // UTILITAS INTI & GAMBAR
+      // =========================================================================
+      function showToast(message, type = 'info') {
+        const styles = {
+          info: 'bg-studio-panel border-studio-teal/50 text-teal-200',
+          success: 'bg-teal-950/95 border-teal-400/60 text-teal-100',
+          warn: 'bg-orange-950/95 border-orange-400/60 text-orange-100',
+          error: 'bg-red-950/95 border-red-400/60 text-red-100'
+        };
+        const el = document.createElement('div');
+        el.className = `pointer-events-auto px-4 py-3 rounded-xl border text-xs font-semibold shadow-2xl backdrop-blur-md transition-all duration-300 ${styles[type] || styles.info}`;
+        el.textContent = message;
+        dom.toastContainer.appendChild(el);
+        setTimeout(() => {
+          el.classList.add('opacity-0', 'translate-x-4');
+          setTimeout(() => el.remove(), 300);
+        }, 3800);
+      }
+
+      function getActiveItem(slideIdx = null) {
+        if (state.mode === 'feed') {
+          const idx = slideIdx !== null ? slideIdx : state.activeSlide;
+          return state.slides[idx] || state.slides[0];
+        }
+        return state.mainItem;
+      }
+
+      function getActiveTheme() {
+        return THEME_PALETTE[state.colorIndex] || THEME_PALETTE[0];
+      }
+
+      function formatRupiah(num) {
+        const n = Math.max(0, Math.round(Number(num) || 0));
+        return 'Rp ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      }
+
+      function getDiscountInfo(normalVal, promoVal) {
+        const normal = Math.max(0, Number(normalVal) || 0);
+        const promo = Math.max(0, Number(promoVal) || 0);
+        if (normal > 0 && promo > 0 && promo < normal) {
+          return { hasDiscount: true, pct: Math.round(((normal - promo) / normal) * 100), hemat: normal - promo, normal, promo };
+        }
+        return { hasDiscount: false, pct: 0, hemat: 0, normal, promo: promo || normal };
+      }
+
+      function drawRoundedRect(ctx, x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
+      }
+
+      function imageToOptimizedBase64(img, maxDim = 768) {
+        if (!img) return null;
+        const iw = img.naturalWidth || img.width;
+        const ih = img.naturalHeight || img.height;
+        if (!iw || !ih) return null;
+        const scale = Math.min(1, maxDim / Math.max(iw, ih));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(iw * scale));
+        c.height = Math.max(1, Math.round(ih * scale));
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        return c.toDataURL('image/jpeg', 0.88).split(',')[1];
+      }
+
+      function removeOuterWhiteBg(img, tolerance = 28, trimEmpty = false) {
+        try {
+          const w = img.naturalWidth || img.width;
+          const h = img.naturalHeight || img.height;
+          if (!w || !h) return img;
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0, w, h);
+
+          const imgData = ctx.getImageData(0, 0, w, h);
+          const data = imgData.data;
+          const hardDist = tolerance * 1.45;
+          const softDist = hardDist + 22;
+          const visited = new Uint8Array(w * h);
+          const queue = new Int32Array(w * h);
+          let head = 0, tail = 0;
+
+          function whiteDistance(p) {
+            const i = p * 4;
+            return Math.hypot(255 - data[i], 255 - data[i + 1], 255 - data[i + 2]);
+          }
+          function enqueue(x, y) {
+            if (x < 0 || x >= w || y < 0 || y >= h) return;
+            const p = y * w + x;
+            if (visited[p]) return;
+            visited[p] = 1;
+            queue[tail++] = p;
+          }
+
+          for (let x = 0; x < w; x++) { enqueue(x, 0); enqueue(x, h - 1); }
+          for (let y = 1; y < h - 1; y++) { enqueue(0, y); enqueue(w - 1, y); }
+
+          while (head < tail) {
+            const p = queue[head++];
+            const i = p * 4;
+            if (data[i + 3] <= 10) {
+              const x = p % w, y = (p - x) / w;
+              enqueue(x + 1, y); enqueue(x - 1, y); enqueue(x, y + 1); enqueue(x, y - 1);
+              continue;
+            }
+            const d = whiteDistance(p);
+            if (d <= hardDist) {
+              data[i + 3] = 0;
+              const x = p % w, y = (p - x) / w;
+              enqueue(x + 1, y); enqueue(x - 1, y); enqueue(x, y + 1); enqueue(x, y - 1);
+            } else if (d <= softDist) {
+              data[i + 3] = Math.round(data[i + 3] * ((d - hardDist) / (softDist - hardDist)));
+            }
+          }
+          ctx.putImageData(imgData, 0, 0);
+          if (!trimEmpty) return canvas;
+
+          let minX = w, minY = h, maxX = 0, maxY = 0, found = false;
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              if (data[(y * w + x) * 4 + 3] > 20) {
+                if (x < minX) minX = x;
+                if (y < minY) minY = y;
+                if (x > maxX) maxX = x;
+                if (y > maxY) maxY = y;
+                found = true;
+              }
+            }
+          }
+          if (!found) return canvas;
+          const pad = 2;
+          const sx = Math.max(0, minX - pad), sy = Math.max(0, minY - pad);
+          const sw = Math.min(w - sx, maxX - minX + 1 + pad * 2);
+          const sh = Math.min(h - sy, maxY - minY + 1 + pad * 2);
+          const trimmed = document.createElement('canvas');
+          trimmed.width = sw; trimmed.height = sh;
+          trimmed.getContext('2d').drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+          return trimmed;
+        } catch (_) {
+          return img;
+        }
+      }
+
+      // Potong manekin full-body menjadi Torso Setengah Badan (berdiri rata di pinggang, TANPA tiang besi & TANPA kaki)
+      function buildTorsoReferenceBase64(img) {
+        if (!img) return null;
+        const iw = img.naturalWidth || img.width;
+        const ih = img.naturalHeight || img.height;
+        const cropH = Math.round(ih * 0.50);
+        const outW = 768, outH = 1024;
+        const c = document.createElement('canvas');
+        c.width = outW; c.height = outH;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, outW, outH);
+
+        const scale = Math.min((outW * 0.78) / iw, (outH * 0.74) / cropH);
+        const dw = Math.round(iw * scale);
+        const dh = Math.round(cropH * scale);
+        const dx = Math.round((outW - dw) / 2);
+        const dy = Math.round((outH - dh) / 2);
+        ctx.drawImage(img, 0, 0, iw, cropH, dx, dy, dw, dh);
+        return c.toDataURL('image/jpeg', 0.90).split(',')[1];
+      }
+
+      function removeSolidBackgroundInstant() {
+        const item = getActiveItem();
+        if (!item.originalImage) { showToast('Upload foto produk terlebih dahulu.', 'warn'); return; }
+        const src = item.originalImage;
+        const w = src.naturalWidth || src.width, h = src.naturalHeight || src.height;
+        const work = document.createElement('canvas');
+        work.width = w; work.height = h;
+        const ctx = work.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(src, 0, 0, w, h);
+        const imgData = ctx.getImageData(0, 0, w, h);
+        const data = imgData.data;
+
+        const corners = [0, (w - 1) * 4, ((h - 1) * w) * 4, ((h - 1) * w + (w - 1)) * 4];
+        let bgR = 0, bgG = 0, bgB = 0;
+        for (const idx of corners) { bgR += data[idx]; bgG += data[idx + 1]; bgB += data[idx + 2]; }
+        bgR /= 4; bgG /= 4; bgB /= 4;
+
+        const hard = (Number(state.bgTolerance) || 30) * 1.5;
+        const soft = hard + 24;
+        const visited = new Uint8Array(w * h);
+        const queue = new Int32Array(w * h);
+        let head = 0, tail = 0;
+
+        function push(x, y) {
+          if (x < 0 || x >= w || y < 0 || y >= h) return;
+          const p = y * w + x;
+          if (visited[p]) return;
+          visited[p] = 1;
+          queue[tail++] = p;
+        }
+        for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
+        for (let y = 1; y < h - 1; y++) { push(0, y); push(w - 1, y); }
+
+        while (head < tail) {
+          const p = queue[head++];
+          const i = p * 4;
+          const d = Math.hypot(data[i] - bgR, data[i + 1] - bgG, data[i + 2] - bgB);
+          if (d <= hard) {
+            data[i + 3] = 0;
+            const x = p % w, y = (p - x) / w;
+            push(x + 1, y); push(x - 1, y); push(x, y + 1); push(x, y - 1);
+          } else if (d <= soft) {
+            data[i + 3] = Math.round(data[i + 3] * ((d - hard) / (soft - hard)));
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+        item.processedImage = work;
+        item.aiTryOnApplied = false;
+        renderAll();
+        showToast('Latar polos dihapus instan (0 Neurons)!', 'success');
+      }
+
+      async function removeBackgroundAiLocal() {
+        const item = getActiveItem();
+        if (!item.originalImage) { showToast('Upload foto produk terlebih dahulu.', 'warn'); return; }
+        dom.aiRemoveBgBtn.disabled = true;
+        dom.aiBgSpinner.classList.remove('hidden');
+        dom.aiBgBtnText.textContent = 'Memproses AI Lokal...';
+        dom.aiBgStatus.classList.remove('hidden');
+        dom.aiBgStatus.textContent = 'Memuat model AI lokal gratis di browser (0 Neurons)...';
+        try {
+          let inputBlob = item.originalBlob;
+          if (!inputBlob) {
+            const tmp = document.createElement('canvas');
+            tmp.width = item.originalImage.naturalWidth || item.originalImage.width;
+            tmp.height = item.originalImage.naturalHeight || item.originalImage.height;
+            tmp.getContext('2d').drawImage(item.originalImage, 0, 0);
+            inputBlob = await new Promise((r) => tmp.toBlob(r, 'image/png'));
+          }
+          const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/+esm');
+          const removeBackground = mod.removeBackground || mod.default;
+          const resBlob = await removeBackground(inputBlob, {
+            progress: (key, cur, tot) => {
+              if (tot > 0) dom.aiBgStatus.textContent = `AI Lokal (${key}): ${Math.min(100, Math.round((cur / tot) * 100))}%`;
+            }
+          });
+          const clean = new Image();
+          await new Promise((resolve, reject) => {
+            clean.onload = resolve; clean.onerror = reject;
+            clean.src = URL.createObjectURL(resBlob);
+          });
+          item.processedImage = clean;
+          item.aiTryOnApplied = false;
+          dom.aiBgStatus.textContent = 'Selesai! Background dihapus bersih 100% lokal (0 Neurons).';
+          renderAll();
+          showToast('Background dihapus dengan AI Lokal!', 'success');
+        } catch (_) {
+          dom.aiBgStatus.textContent = 'Model AI lokal CDN sedang lambat. Gunakan tombol Hapus Latar Polos (Instan 0 Detik).';
+          showToast('Gunakan Hapus Latar Polos instan.', 'warn');
+        } finally {
+          dom.aiRemoveBgBtn.disabled = false;
+          dom.aiBgSpinner.classList.add('hidden');
+          dom.aiBgBtnText.textContent = 'Hapus Background AI Lokal (Gratis)';
+        }
+      }
+
+      // =========================================================================
+      // AI RAPIKAN PRODUK & AI TRY-ON (/api/tryon)
+      // =========================================================================
+      async function triggerAiClean() {
+        const item = getActiveItem();
+        const srcImg = item.originalImage || item.processedImage;
+        if (!srcImg) { showToast('Upload foto produk terlebih dahulu.', 'warn'); return; }
+
+        dom.aiCleanBtn.disabled = true;
+        dom.aiCleanSpinner.classList.remove('hidden');
+        dom.aiCleanBtnText.textContent = 'AI sedang merapikan foto...';
+        dom.aiCleanStatus.classList.remove('hidden');
+        dom.aiCleanStatus.textContent = 'Merapikan foto, menghapus stiker harga & membaca teks label asli (±10–20 detik)...';
+
+        try {
+          const res = await fetch('/api/tryon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              mode: 'clean',
+              category: state.category,
+              productBase64: imageToOptimizedBase64(srcImg, 896),
+              productMime: 'image/jpeg'
+            })
+          });
+          const data = await res.json().catch(() => null);
+          if (!res.ok || !data?.imageBase64) {
+            if (data?.quotaExhausted) recordLocalQuotaUsage(0, true);
+            throw new Error(data?.error || `HTTP ${res.status}`);
+          }
+
+          const img = new Image();
+          await new Promise((resolve, reject) => {
+            img.onload = resolve; img.onerror = reject;
+            img.src = `data:${data.mimeType || 'image/jpeg'};base64,${data.imageBase64}`;
+          });
+
+          item.processedImage = removeOuterWhiteBg(img, 24, true);
+          item.aiTryOnApplied = false;
+          recordLocalQuotaUsage(data.estimatedNeurons || 165, false, 'clean');
+          dom.aiCleanStatus.textContent = '✨ Selesai! Foto produk kini rapi, bebas kusut & bebas stiker harga (klik Reset Foto Asli kapan saja).';
+          renderAll();
+          showToast('Foto produk berhasil dirapikan dengan AI!', 'success');
+        } catch (err) {
+          dom.aiCleanStatus.textContent = `Gagal memanggil /api/tryon (${err.message}). Mode lokal tetap aman.`;
+          showToast('Gagal AI Rapikan Foto. Mode lokal tetap aman.', 'warn');
+        } finally {
+          dom.aiCleanBtn.disabled = false;
+          dom.aiCleanSpinner.classList.add('hidden');
+          dom.aiCleanBtnText.textContent = '✨ Rapikan Foto Produk dengan AI (Anti Kusut & Hapus Stiker)';
+        }
+      }
+
+      async function triggerAiTryOn() {
+        const rule = CATEGORY_RULES[state.category];
+        const item = getActiveItem();
+        const srcImg = item.processedImage || item.originalImage;
+        if (!srcImg) { showToast('Upload foto produk terlebih dahulu.', 'warn'); return; }
+        if (!rule.allowMannequin && !rule.allowHand) {
+          showToast('Kategori Sepatu tidak menggunakan Manekin maupun Tangan Acuan.', 'warn');
+          return;
+        }
+
+        const tryMode = rule.allowHand ? 'hand' : 'mannequin';
+        const refAsset = tryMode === 'hand' ? state.assets.tanganAcuan : state.assets[rule.mannequinKey];
+        if (!refAsset) {
+          showToast('Aset acuan manekin/tangan belum termuat. Cek folder public/brandfeed/assets/.', 'warn');
+          return;
+        }
+
+        const hasBottom = tryMode === 'mannequin' && Boolean(item.bottomImage);
+        const framing = hasBottom ? 'full' : state.mannequinFraming;
+        const refB64 = (tryMode === 'mannequin' && framing === 'torso')
+          ? buildTorsoReferenceBase64(refAsset)
+          : imageToOptimizedBase64(refAsset, 896);
+
+        dom.aiTryOnBtn.disabled = true;
+        dom.aiTryOnSpinner.classList.remove('hidden');
+        dom.aiTryOnBtnText.textContent = 'Memproses AI Try-On (±15 detik)...';
+        dom.aiTryOnStatus.classList.remove('hidden');
+        dom.aiTryOnStatus.textContent = tryMode === 'hand'
+          ? 'Meletakkan produk ke atas telapak tangan acuan secara realistis...'
+          : (hasBottom
+            ? 'Memakaikan setelan Atasan + Bawahan ke manekin polos...'
+            : (framing === 'torso' ? 'Memakaikan atasan ke Manekin Torso Setengah Badan (tanpa besi)...' : 'Memakaikan pakaian ke manekin polos full-body...'));
+
+        try {
+          const payload = {
+            mode: tryMode,
+            category: state.category,
+            framing,
+            referenceBase64: refB64,
+            referenceMime: 'image/jpeg',
+            productBase64: imageToOptimizedBase64(srcImg, 896),
+            productMime: 'image/jpeg'
+          };
+          if (hasBottom) {
+            payload.bottomBase64 = imageToOptimizedBase64(item.bottomImage, 896);
+            payload.bottomMime = 'image/jpeg';
+          }
+
+          const res = await fetch('/api/tryon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json().catch(() => null);
+          if (!res.ok || !data?.imageBase64) {
+            if (data?.quotaExhausted) recordLocalQuotaUsage(0, true);
+            throw new Error(data?.error || `HTTP ${res.status}`);
+          }
+
+          const img = new Image();
+          await new Promise((resolve, reject) => {
+            img.onload = resolve; img.onerror = reject;
+            img.src = `data:${data.mimeType || 'image/jpeg'};base64,${data.imageBase64}`;
+          });
+
+          item.processedImage = removeOuterWhiteBg(img, 22, true);
+          item.aiTryOnApplied = true;
+          item.posX = 0; item.posY = 0; item.scale = 100; item.rotation = 0;
+          state.mode = tryMode;
+
+          recordLocalQuotaUsage(data.estimatedNeurons || 188, false, 'tryon');
+          syncModeUI();
+          syncFormFromActiveItem();
+          dom.aiTryOnStatus.textContent = '✨ Selesai! Hasil AI Try-On sudah masuk ke poster (klik Reset Foto Asli kapan saja).';
+          renderAll();
+          showToast('AI Try-On berhasil diterapkan!', 'success');
+        } catch (err) {
+          dom.aiTryOnStatus.textContent = `Gagal memanggil /api/tryon (${err.message}). Mode lokal 2D tetap aman.`;
+          showToast('Gagal memanggil /api/tryon. Mode lokal tetap aman.', 'warn');
+        } finally {
+          dom.aiTryOnBtn.disabled = false;
+          dom.aiTryOnSpinner.classList.add('hidden');
+          updateTryOnUiLabels();
+        }
+      }
+
+      // =========================================================================
+      // AI VISION FULL-AUTO (/api/analyze) + FALLBACK OFFLINE
+      // =========================================================================
+      function applyBrandTextAuto(brandName) {
+        if (!brandName) return;
+        const upper = String(brandName).trim().toUpperCase().slice(0, 28);
+        if (!upper) return;
+        state.brandText = upper;
+        dom.brandTextInput.value = upper;
+        const opt = Array.from(dom.brandPresetSelect.options).find((o) => o.value === upper);
+        state.brandPreset = opt ? upper : 'CUSTOM';
+        dom.brandPresetSelect.value = state.brandPreset;
+      }
+
+      function applyAiAnalysisResult(parsed, sourceLabel) {
+        const item = getActiveItem();
+        if (parsed.kategori && CATEGORY_RULES[parsed.kategori]) {
+          state.category = parsed.kategori;
+          dom.categorySelect.value = parsed.kategori;
+        }
+        if (parsed.brand) {
+          applyBrandTextAuto(parsed.brand);
+        }
+
+        const labels = Array.isArray(parsed.warna_label) ? parsed.warna_label.slice(0, 3) : [];
+        const hexes = Array.isArray(parsed.warna_hex) ? parsed.warna_hex.slice(0, 3) : [];
+        const detectedColors = labels.map((lbl, idx) => ({
+          nama: String(lbl || 'Warna').slice(0, 16),
+          hex: /^#[0-9a-fA-F]{6}$/.test(hexes[idx] || '') ? hexes[idx] : '#64748b'
+        }));
+
+        if (parsed.label_atas) item.promoTag = String(parsed.label_atas).toUpperCase().slice(0, 38);
+        if (parsed.nama_produk) item.title = String(parsed.nama_produk).slice(0, 55);
+        if (parsed.tagline) item.tagline = String(parsed.tagline).slice(0, 64);
+        if (parsed.bahan) item.bahan = String(parsed.bahan).slice(0, 42);
+        if (parsed.detail_produk) item.detail = String(parsed.detail_produk).slice(0, 58);
+        if (parsed.info_fit) item.fit = String(parsed.info_fit).slice(0, 48);
+        if (detectedColors.length) item.productColors = detectedColors;
+
+        syncCategoryUI(true);
+        syncFormFromActiveItem();
+        renderAll();
+
+        const brandInfo = parsed.brand ? ` • Brand: ${parsed.brand}` : '';
+        dom.aiAnalyzeStatus.textContent = `✨ Seluruh teks poster terisi otomatis (${sourceLabel}${brandInfo}). Anda tetap bisa edit manual di kolom bawah.`;
+        showToast(`AI Vision berhasil mengisi seluruh keterangan produk!`, 'success');
+      }
+
+      async function analyzeProductDualPath() {
+        const item = getActiveItem();
+        const srcImg = item.originalImage || item.processedImage;
+        if (!srcImg) { showToast('Upload foto produk terlebih dahulu.', 'warn'); return; }
+
+        const base64Image = imageToOptimizedBase64(srcImg, 768);
+        if (!base64Image) return;
+
+        dom.aiAnalyzeBtn.disabled = true;
+        dom.aiAnalyzeSpinner.classList.remove('hidden');
+        dom.aiAnalyzeBtnText.textContent = 'Menganalisa seluruh detail...';
+        dom.aiAnalyzeStatus.classList.remove('hidden');
+        dom.aiAnalyzeStatus.textContent = 'Membaca merek, jenis produk, bahan, detail, tagline & warna (/api/analyze)...';
+
+        try {
+          const cfRes = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              imageBase64: base64Image,
+              mimeType: 'image/jpeg',
+              currentCategory: state.category
+            })
+          });
+          const cfData = await cfRes.json().catch(() => null);
+          if (cfRes.ok && cfData && cfData.nama_produk) {
+            recordLocalQuotaUsage(cfData.estimatedNeurons || 20, false, 'analyze');
+            applyAiAnalysisResult(cfData, 'Cloudflare Workers AI');
+            return;
+          }
+          if (cfData?.quotaExhausted) recordLocalQuotaUsage(0, true);
+        } catch (_) {}
+
+        dom.aiAnalyzeStatus.textContent = 'Endpoint /api/analyze belum aktif/terkendala. Menjalankan Isi Cepat & Deteksi Warna (Offline Rp 0)...';
+        runOfflineLocalAnalyzer(true);
+      }
+
+      function nearestIndonesianColorName(r, g, b) {
+        const refs = [
+          { name: 'Hitam', r: 25, g: 25, b: 28 }, { name: 'Putih', r: 245, g: 245, b: 245 },
+          { name: 'Krem', r: 235, g: 226, b: 208 }, { name: 'Abu-abu', r: 135, g: 140, b: 148 },
+          { name: 'Coklat Tan', r: 158, g: 108, b: 66 }, { name: 'Coklat Tua', r: 84, g: 52, b: 34 },
+          { name: 'Merah', r: 190, g: 36, b: 48 }, { name: 'Maroon', r: 122, g: 28, b: 44 },
+          { name: 'Amber Emas', r: 215, g: 174, b: 112 }, { name: 'Hijau Olive', r: 92, g: 112, b: 54 },
+          { name: 'Teal Tua', r: 18, g: 118, b: 110 }, { name: 'Biru Navy', r: 32, g: 54, b: 108 },
+          { name: 'Biru Denim', r: 72, g: 118, b: 172 }, { name: 'Pink Lembut', r: 225, g: 158, b: 174 },
+          { name: 'Ungu', r: 112, g: 64, b: 148 }
+        ];
+        let best = refs[0], minD = Infinity;
+        for (const c of refs) {
+          const d = (r - c.r) ** 2 + (g - c.g) ** 2 + (b - c.b) ** 2;
+          if (d < minD) { minD = d; best = c; }
+        }
+        return best.name;
+      }
+
+      function rgbToHex(r, g, b) {
+        return '#' + [r, g, b].map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+      }
+
+      function runOfflineLocalAnalyzer(fromFallback = false) {
+        const item = getActiveItem();
+        const img = item.processedImage || item.originalImage;
+        if (!img) { showToast('Upload foto produk terlebih dahulu.', 'warn'); return; }
+
+        const c = document.createElement('canvas');
+        c.width = 96; c.height = 96;
+        const ctx = c.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0, 96, 96);
+        const data = ctx.getImageData(0, 0, 96, 96).data;
+
+        const buckets = new Map();
+        for (let y = 8; y < 88; y += 2) {
+          for (let x = 8; x < 88; x += 2) {
+            const i = (y * 96 + x) * 4;
+            if (data[i + 3] < 180) continue;
+            const r = data[i], g = data[i + 1], b = data[i + 2];
+            if (r > 246 && g > 246 && b > 246) continue;
+            const key = `${Math.round(r / 32) * 32},${Math.round(g / 32) * 32},${Math.round(b / 32) * 32}`;
+            const cur = buckets.get(key) || { count: 0, r: 0, g: 0, b: 0 };
+            cur.count++; cur.r += r; cur.g += g; cur.b += b;
+            buckets.set(key, cur);
+          }
+        }
+        const sorted = [...buckets.values()].sort((a, b) => b.count - a.count);
+        const picked = [];
+        for (const bkt of sorted) {
+          const avgR = bkt.r / bkt.count, avgG = bkt.g / bkt.count, avgB = bkt.b / bkt.count;
+          if (!picked.some((p) => Math.hypot(p.r - avgR, p.g - avgG, p.b - avgB) < 60)) {
+            picked.push({ r: avgR, g: avgG, b: avgB, nama: nearestIndonesianColorName(avgR, avgG, avgB), hex: rgbToHex(avgR, avgG, avgB) });
+          }
+          if (picked.length >= 3) break;
+        }
+
+        const rule = CATEGORY_RULES[state.category];
+        item.promoTag = rule.defaultTag;
+        item.title = rule.defaultTitle;
+        item.tagline = rule.defaultTagline;
+        item.bahan = rule.defaultBahan;
+        item.detail = rule.defaultDetail;
+        item.fit = rule.defaultFit;
+        item.productColors = picked.length ? picked.map(({ nama, hex }) => ({ nama, hex })) : [{ nama: 'Netral', hex: '#d6cfc1' }];
+
+        syncFormFromActiveItem();
+        renderAll();
+        dom.aiAnalyzeBtn.disabled = false;
+        dom.aiAnalyzeSpinner.classList.add('hidden');
+        dom.aiAnalyzeBtnText.textContent = '✨ Analisa Detail Produk dengan AI';
+        showToast(fromFallback ? 'Fallback Offline Rp 0 mengisi seluruh teks & warna!' : 'Deteksi warna & isi cepat selesai!', 'success');
+      }
+
+      // =========================================================================
+      // AUTO-LOAD 6 ASET TETAP
+      // =========================================================================
+      function loadImageFromUrl(url) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = url;
+        });
+      }
+
+      async function autoLoadFixedAssets() {
+        await Promise.all(FIXED_ASSET_DEFS.map(async (def) => {
+          for (const url of def.paths) {
+            try {
+              const img = await loadImageFromUrl(url);
+              state.assets[def.key] = def.stripWhite ? removeOuterWhiteBg(img, 28, def.trim) : img;
+              state.assetSource[def.key] = 'file';
+              return;
+            } catch (_) {}
+          }
+          state.assets[def.key] = null;
+          state.assetSource[def.key] = 'fallback';
+        }));
+        updateStudioStatusPill();
+        renderFixedAssetsManager();
+        renderAll();
+      }
+
+      function updateStudioStatusPill() {
+        const count = FIXED_ASSET_DEFS.filter((d) => state.assetSource[d.key] !== 'fallback').length;
+        dom.studioStatusText.textContent = count === FIXED_ASSET_DEFS.length
+          ? '6/6 Aset Asli Aktif • Siap Produksi Rp 0'
+          : count > 0 ? `${count}/6 Aset Dimuat • Fallback Aktif` : 'Mode Preview Lokal • Fallback Studio Aktif';
+      }
+
+      function renderFixedAssetsManager() {
+        dom.fixedAssetsGrid.innerHTML = '';
+        FIXED_ASSET_DEFS.forEach((def) => {
+          const srcType = state.assetSource[def.key];
+          const card = document.createElement('div');
+          card.className = 'bg-studio-panel border border-studio-border rounded-xl p-3 flex items-center justify-between gap-2';
+
+          const info = document.createElement('div');
+          info.className = 'min-w-0';
+          info.innerHTML = `<div class="text-xs font-bold text-studio-text truncate">${def.label}</div><div class="text-[10px] font-semibold mt-0.5 ${srcType !== 'fallback' ? 'text-teal-300' : 'text-studio-muted'}">${srcType === 'file' ? 'Aktif otomatis dari repo' : srcType === 'manual' ? 'Aktif (Upload Uji Coba)' : 'Fallback Bawaan Studio'}</div>`;
+
+          const actions = document.createElement('div');
+          actions.className = 'flex items-center gap-1.5 shrink-0';
+          const labelBtn = document.createElement('label');
+          labelBtn.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-studio-card hover:bg-slate-700 border border-studio-border text-studio-text cursor-pointer transition';
+          labelBtn.textContent = 'Upload';
+
+          const input = document.createElement('input');
+          input.type = 'file'; input.accept = 'image/png,image/jpeg,image/webp'; input.className = 'hidden';
+          input.addEventListener('change', (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const img = new Image();
+              img.onload = () => {
+                state.assets[def.key] = def.stripWhite ? removeOuterWhiteBg(img, 28, def.trim) : img;
+                state.assetSource[def.key] = 'manual';
+                updateStudioStatusPill(); renderFixedAssetsManager(); renderAll();
+                showToast(`Aset "${def.label}" diterapkan!`, 'success');
+              };
+              img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+          });
+          labelBtn.appendChild(input);
+          actions.appendChild(labelBtn);
+          card.appendChild(info);
+          card.appendChild(actions);
+          dom.fixedAssetsGrid.appendChild(card);
+        });
+      }
+
+      // =========================================================================
+      // CONTOH PRODUK CEPAT (BAJU, SEPATU, PARFUM)
+      // =========================================================================
+      function generateSampleProduct(kind) {
+        const c = document.createElement('canvas');
+        c.width = 760; c.height = 760;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 760, 760);
+        const theme = getActiveTheme();
+        const item = getActiveItem();
+
+        if (kind === 'sepatu') {
+          state.category = 'sepatu'; dom.categorySelect.value = 'sepatu';
+          ctx.save(); ctx.translate(380, 415);
+          ctx.fillStyle = '#faf8f5'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.moveTo(-228, 68); ctx.quadraticCurveTo(0, 96, 238, 74); ctx.quadraticCurveTo(258, 72, 252, 110); ctx.quadraticCurveTo(12, 128, -224, 106); ctx.closePath(); ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#6b4226';
+          ctx.beginPath(); ctx.moveTo(-216, 72); ctx.lineTo(-196, -96); ctx.quadraticCurveTo(-140, -112, -82, -68); ctx.quadraticCurveTo(-22, -108, 48, -16); ctx.quadraticCurveTo(148, 6, 226, 42); ctx.quadraticCurveTo(244, 54, 234, 78); ctx.quadraticCurveTo(0, 98, -216, 72); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#e7dfd1'; ctx.beginPath(); ctx.moveTo(-125, 68); ctx.quadraticCurveTo(-28, -14, 78, 14); ctx.lineTo(44, 78); ctx.closePath(); ctx.fill();
+          ctx.restore();
+          Object.assign(item, { title: 'Sneaker Kasual Vintage Tan', promoTag: 'BEST SELLER • KOLEKSI SEPATU', tagline: 'Nyaman Melangkah, Gaya Kasual Seharian', normalPrice: 399900, promoPrice: 249900, bahan: 'Synthetic Leather & Suede', detail: 'Sol karet gum anti slip, insole empuk', fit: 'Ringan & nyaman dipakai seharian', productColors: [{ nama: 'Coklat Tan', hex: '#6b4226' }, { nama: 'Krem', hex: '#e7dfd1' }], uploadName: 'Contoh aktif: Sneaker Kasual Tan', posX: 0, posY: 0, scale: 100, rotation: 0, aiTryOnApplied: false });
+        } else if (kind === 'parfum') {
+          state.category = 'parfum_kosmetik'; dom.categorySelect.value = 'parfum_kosmetik';
+          ctx.save(); ctx.translate(380, 395);
+          ctx.fillStyle = '#0f172a'; drawRoundedRect(ctx, -56, -245, 112, 92, 16); ctx.fill();
+          ctx.fillStyle = '#d4af37'; drawRoundedRect(ctx, -34, -155, 68, 40, 6); ctx.fill();
+          ctx.fillStyle = '#dfb882'; drawRoundedRect(ctx, -155, -118, 310, 342, 34); ctx.fill();
+          ctx.fillStyle = '#fcfaf6'; drawRoundedRect(ctx, -108, -42, 216, 174, 10); ctx.fill();
+          ctx.fillStyle = '#1c1917'; ctx.textAlign = 'center'; ctx.font = '800 28px Inter, sans-serif'; ctx.fillText('VELVET AMBER', 0, 22);
+          ctx.fillStyle = '#78716c'; ctx.font = '600 16px Inter, sans-serif'; ctx.fillText('EAU DE PARFUM', 0, 56);
+          ctx.restore();
+          Object.assign(item, { title: 'Velvet Amber Eau de Parfum', promoTag: 'FAVORIT • KOLEKSI WEWANGIAN', tagline: 'Aroma Elegan & Segar Tahan Sepanjang Hari', normalPrice: 289000, promoPrice: 179000, bahan: 'Eau de Parfum • Amber & Floral', detail: 'Botol kaca elegan, semprotan halus', fit: 'Wangi hangat tahan hingga 8 jam', productColors: [{ nama: 'Amber Emas', hex: '#dfb882' }, { nama: 'Hitam', hex: '#1e293b' }], uploadName: 'Contoh aktif: Velvet Amber Parfum', posX: 0, posY: 0, scale: 100, rotation: 0, aiTryOnApplied: false });
+        } else {
+          if (!CATEGORY_RULES[state.category].allowMannequin) { state.category = 'baju_cewek'; dom.categorySelect.value = 'baju_cewek'; }
+          ctx.save(); ctx.translate(380, 385); ctx.scale(1.12, 1.12);
+          ctx.fillStyle = theme.primary;
+          ctx.beginPath(); ctx.moveTo(-82, -235); ctx.quadraticCurveTo(-190, -210, -275, -55); ctx.lineTo(-290, 175); ctx.lineTo(-205, 185); ctx.lineTo(-162, 10); ctx.lineTo(-152, -75); ctx.closePath(); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(82, -235); ctx.quadraticCurveTo(190, -210, 275, -55); ctx.lineTo(290, 175); ctx.lineTo(205, 185); ctx.lineTo(162, 10); ctx.lineTo(152, -75); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#eee8dd';
+          ctx.beginPath(); ctx.moveTo(-82, -235); ctx.quadraticCurveTo(0, -190, 82, -235); ctx.lineTo(155, -75); ctx.lineTo(166, 225); ctx.quadraticCurveTo(0, 245, -166, 225); ctx.lineTo(-155, -75); ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = theme.dark; ctx.lineWidth = 22; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(-78, -236); ctx.quadraticCurveTo(0, -184, 78, -236); ctx.stroke();
+          ctx.fillStyle = theme.dark; ctx.font = '800 34px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.fillText((state.brandText || 'NEVADA').toUpperCase(), 0, -48);
+          ctx.restore();
+          Object.assign(item, { title: 'Raglan Sweatshirt Koleksi Terbaru', promoTag: 'NEW ARRIVAL • KOLEKSI TERBARU', tagline: 'Tampil Kasual, Rapi & Nyaman Setiap Hari', normalPrice: 249900, promoPrice: 149900, bahan: 'Katun Fleece Lembut', detail: 'Lengan raglan kontras, jahitan rapi', fit: 'Regular fit, nyaman harian', productColors: [{ nama: 'Krem', hex: '#ece6da' }, { nama: theme.name, hex: theme.primary }], uploadName: 'Contoh aktif: Raglan Sweatshirt', posX: 0, posY: 0, scale: 100, rotation: 0, aiTryOnApplied: false });
+        }
+
+        const cleanCutout = removeOuterWhiteBg(c, 28, true);
+        item.originalImage = c;
+        item.processedImage = cleanCutout;
+        c.toBlob((blob) => { item.originalBlob = blob; }, 'image/png');
+        syncCategoryUI(true);
+        syncFormFromActiveItem();
+        renderAll();
+      }
+
+      // =========================================================================
+      // ENGINE RENDER KANVAS HD (4 ZONA SEIMBANG, FEEL GOOD SUDUT RUNCING 90°, TANPA BADGE AI)
+      // =========================================================================
+      function getPaperPattern(ctx) {
+        if (!paperPatternCanvas) {
+          paperPatternCanvas = document.createElement('canvas');
+          paperPatternCanvas.width = 256; paperPatternCanvas.height = 256;
+          const pctx = paperPatternCanvas.getContext('2d');
+          pctx.fillStyle = '#f5f0e8'; pctx.fillRect(0, 0, 256, 256);
+          for (let i = 0; i < 1400; i++) {
+            const alpha = Math.random() * 0.026;
+            pctx.fillStyle = Math.random() > 0.5 ? `rgba(115,98,78,${alpha})` : `rgba(255,255,255,${alpha * 1.4})`;
+            pctx.fillRect(Math.random() * 256, Math.random() * 256, Math.random() * 2 + 0.5, Math.random() * 2 + 0.5);
+          }
+        }
+        return ctx.createPattern(paperPatternCanvas, 'repeat');
+      }
+
+      function wrapTextLines(ctx, text, maxWidth, maxLines = 2) {
+        const clean = (text || '').trim();
+        if (!clean) return [];
+        const words = clean.split(/\s+/);
+        const lines = [];
+        let current = '';
+        for (let i = 0; i < words.length; i++) {
+          const test = current ? `${current} ${words[i]}` : words[i];
+          if (ctx.measureText(test).width > maxWidth && current) {
+            lines.push(current);
+            current = words[i];
+            if (lines.length === maxLines - 1) {
+              let rest = words.slice(i).join(' ');
+              while (ctx.measureText(rest).width > maxWidth && rest.length > 3) rest = rest.slice(0, -1);
+              if (rest !== words.slice(i).join(' ')) rest = rest.trim() + '…';
+              lines.push(rest);
+              return lines;
+            }
+          } else {
+            current = test;
+          }
+        }
+        if (current) lines.push(current);
+        return lines.slice(0, maxLines);
+      }
+
+      // Logo Feel good. persegi petak sudut runcing 90°
+      function drawFeelGoodBadge(ctx, x, y, size) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x, y, size, size);
+        ctx.clip();
+        if (state.assets.feelGood) {
+          ctx.drawImage(state.assets.feelGood, x, y, size, size);
+        } else {
+          ctx.fillStyle = '#e00808';
+          ctx.fillRect(x, y, size, size);
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.font = `900 ${Math.round(size * 0.30)}px Inter, sans-serif`;
+          ctx.fillText('Feel', x + size * 0.48, y + size * 0.37);
+          ctx.font = `900 ${Math.round(size * 0.28)}px Inter, sans-serif`;
+          ctx.fillText('good.', x + size * 0.51, y + size * 0.67);
+        }
+        ctx.restore();
+      }
+
+      function drawWhatsAppIcon(ctx, cx, cy, radius) {
+        ctx.save();
+        ctx.fillStyle = '#16a34a';
+        ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = radius * 0.22; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.arc(cx + radius * 0.08, cy - radius * 0.08, radius * 0.44, Math.PI * 0.58, Math.PI * 1.18); ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawSubtleBotanicalAccents(ctx, W, H, theme) {
+        if (!state.showBgAccents) return;
+        ctx.save();
+        ctx.fillStyle = theme.primary;
+        ctx.strokeStyle = theme.primary;
+        function drawSprig(ox, oy, ang, sc) {
+          ctx.save(); ctx.translate(ox, oy); ctx.rotate(ang); ctx.scale(sc, sc);
+          ctx.globalAlpha = 0.065; ctx.lineWidth = 4; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(55, -80, 145, -185); ctx.stroke();
+          ctx.globalAlpha = 0.072;
+          [{ x: 34, y: -44, a: -0.95, rx: 32, ry: 11 }, { x: 54, y: -64, a: 0.35, rx: 34, ry: 12 }, { x: 82, y: -104, a: -0.85, rx: 30, ry: 11 }, { x: 102, y: -124, a: 0.25, rx: 32, ry: 11 }].forEach((lf) => {
+            ctx.save(); ctx.translate(lf.x, lf.y); ctx.rotate(lf.a);
+            ctx.beginPath(); ctx.ellipse(lf.rx * 0.6, 0, lf.rx, lf.ry, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+          });
+          ctx.restore();
+        }
+        drawSprig(W + 18, 225, -2.2, 1.15);
+        drawSprig(-18, 255, 0.42, 0.95);
+        drawSprig(-16, H - 150, -0.35, 1.05);
+        drawSprig(W + 16, H - 165, -2.55, 1.0);
+        ctx.restore();
+      }
+
+      function drawIntegratedHeader(ctx, W, ratioKey, theme) {
+        const headerH = ratioKey === '1:1' ? 98 : ratioKey === '4:5' ? 110 : 122;
+        ctx.fillStyle = 'rgba(120, 106, 90, 0.18)';
+        ctx.fillRect(48, headerH - 2, W - 96, 2);
+
+        const brandText = (state.brandText || 'MATAHARI').trim().toUpperCase();
+        ctx.fillStyle = '#1c1917';
+        const fontSize = brandText.length > 14 ? 32 : ratioKey === '1:1' ? 40 : 45;
+        ctx.font = `900 ${fontSize}px Inter, sans-serif`;
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        ctx.fillText(brandText, 48, headerH / 2 - 4);
+
+        ctx.fillStyle = theme.primary;
+        drawRoundedRect(ctx, 48, headerH - 17, 68, 5, 2.5);
+        ctx.fill();
+
+        const badgeSize = ratioKey === '1:1' ? 72 : ratioKey === '4:5' ? 80 : 88;
+        drawFeelGoodBadge(ctx, W - 48 - badgeSize, Math.round((headerH - badgeSize) / 2) - 1, badgeSize);
+        return headerH;
+      }
+
+      function drawEditorialTopHeader(ctx, W, startY, ratioKey, theme, item, isFeed, slideIdx) {
+        const isSquare = ratioKey === '1:1', isPortrait = ratioKey === '4:5';
+        const maxW = W - 96;
+        let curY = startY;
+
+        const rawTag = (item.promoTag || '').trim().toUpperCase();
+        const pillLabel = isFeed ? `SLIDE ${slideIdx + 1}/${state.slideCount}${rawTag ? '  •  ' + rawTag : ''}` : rawTag;
+        if (pillLabel) {
+          const pillH = isSquare ? 28 : isPortrait ? 34 : 38;
+          ctx.save();
+          ctx.font = isSquare ? '800 14px Inter, sans-serif' : isPortrait ? '800 16px Inter, sans-serif' : '800 18px Inter, sans-serif';
+          const pillW = Math.min(maxW, ctx.measureText(pillLabel).width + (isSquare ? 32 : 44));
+          drawRoundedRect(ctx, (W - pillW) / 2, curY, pillW, pillH, pillH / 2);
+          ctx.fillStyle = theme.primary; ctx.fill();
+          ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(pillLabel, W / 2, curY + pillH / 2 + 1);
+          ctx.restore();
+          curY += pillH + (isSquare ? 8 : isPortrait ? 12 : 16);
+        }
+
+        const titleSize = isSquare ? 34 : isPortrait ? 42 : 50;
+        const titleLH = isSquare ? 39 : isPortrait ? 48 : 57;
+        ctx.save();
+        ctx.fillStyle = '#1c1917';
+        ctx.font = `900 ${titleSize}px Inter, sans-serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        wrapTextLines(ctx, item.title || 'Koleksi Pilihan Terbaru', maxW - 16, isSquare ? 1 : 2).forEach((ln) => {
+          ctx.fillText(ln, W / 2, curY); curY += titleLH;
+        });
+        ctx.restore();
+
+        const taglineClean = (item.tagline || '').trim();
+        if (taglineClean) {
+          curY += isSquare ? 4 : isPortrait ? 6 : 10;
+          const tagSize = isSquare ? 17 : isPortrait ? 21 : 24;
+          ctx.save();
+          ctx.fillStyle = '#57534e';
+          ctx.font = `500 ${tagSize}px Inter, sans-serif`;
+          ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+          const line = wrapTextLines(ctx, taglineClean, maxW - 40, 1)[0];
+          if (line) { ctx.fillText(line, W / 2, curY); curY += tagSize + (isSquare ? 4 : 8); }
+          ctx.restore();
+        }
+        return curY;
+      }
+
+      function drawBottomHighlightStrip(ctx, W, y, h, theme, isCompact) {
+        const text = (state.bottomStripText || '').trim();
+        if (!state.showBottomStrip || !text) return;
+        const padX = 48, w = W - 96;
+        ctx.save();
+        drawRoundedRect(ctx, padX, y, w, h, h / 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.72)'; ctx.fill();
+        ctx.strokeStyle = 'rgba(120, 106, 90, 0.18)'; ctx.lineWidth = 1.6; ctx.stroke();
+        ctx.fillStyle = theme.primary;
+        ctx.beginPath();
+        ctx.arc(padX + 24, y + h / 2, isCompact ? 4 : 5, 0, Math.PI * 2);
+        ctx.arc(padX + w - 24, y + h / 2, isCompact ? 4 : 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#44403c';
+        ctx.font = isCompact ? '700 16px Inter, sans-serif' : '700 19px Inter, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(wrapTextLines(ctx, text, w - 84, 1)[0] || '', W / 2, y + h / 2 + 1);
+        ctx.restore();
+      }
+
+      function drawIntegratedFooter(ctx, W, H, ratioKey, theme) {
+        const footerH = ratioKey === '1:1' ? 106 : ratioKey === '4:5' ? 118 : 134;
+        const fy = H - footerH;
+        ctx.fillStyle = 'rgba(255, 253, 248, 0.5)'; ctx.fillRect(0, fy, W, footerH);
+        ctx.fillStyle = 'rgba(120, 106, 90, 0.18)'; ctx.fillRect(48, fy, W - 96, 2);
+        ctx.fillStyle = theme.primary; ctx.fillRect(0, H - 7, W, 7);
+
+        if (state.assets.footerStrip) {
+          const fImg = state.assets.footerStrip;
+          const ratio = Math.min((W - 96) / fImg.width, ((footerH - 16) * 0.86) / fImg.height);
+          const dw = fImg.width * ratio, dh = fImg.height * ratio;
+          ctx.drawImage(fImg, (W - dw) / 2, fy + (footerH - 7 - dh) / 2, dw, dh);
+        } else {
+          const midY = fy + (footerH - 7) / 2;
+          drawWhatsAppIcon(ctx, 210, midY, ratioKey === '1:1' ? 22 : 26);
+          ctx.fillStyle = '#15803d'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          ctx.font = ratioKey === '1:1' ? 'italic 900 31px Inter, sans-serif' : 'italic 900 35px Inter, sans-serif';
+          ctx.fillText('0811-8118-8888', 246, midY + 1);
+          ctx.textAlign = 'right'; ctx.fillStyle = '#dc0a0a';
+          ctx.font = ratioKey === '1:1' ? '900 35px Inter, sans-serif' : '900 40px Inter, sans-serif';
+          ctx.fillText('matahari', W - 48, midY - 14);
+          ctx.font = ratioKey === '1:1' ? 'italic 700 16px Inter, sans-serif' : 'italic 700 19px Inter, sans-serif';
+          ctx.fillText('Manhattan Times Square Medan', W - 48, midY + 18);
+        }
+        return footerH;
+      }
+
+      function drawProductWithTransform(ctx, item, cx, cy, maxW, maxH, contactShadow = true) {
+        const img = item.processedImage;
+        if (!img) return;
+        const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+        const baseRatio = Math.min(maxW / iw, maxH / ih);
+        const s = (Number(item.scale) || 100) / 100;
+        const dw = iw * baseRatio * s, dh = ih * baseRatio * s;
+        const tx = cx + (Number(item.posX) || 0), ty = cy + (Number(item.posY) || 0);
+        const rad = ((Number(item.rotation) || 0) * Math.PI) / 180;
+
+        if (contactShadow) {
+          ctx.save();
+          const shY = ty + dh * 0.49;
+          const shRx = Math.min(maxW * 0.44, dw * 0.42);
+          const shGrad = ctx.createRadialGradient(tx, shY, 6, tx, shY, shRx);
+          shGrad.addColorStop(0, 'rgba(35,28,22,0.20)');
+          shGrad.addColorStop(1, 'rgba(35,28,22,0)');
+          ctx.fillStyle = shGrad;
+          ctx.beginPath(); ctx.ellipse(tx, shY, shRx, Math.max(12, Math.min(22, dh * 0.045)), 0, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        }
+        ctx.save();
+        ctx.translate(tx, ty); ctx.rotate(rad);
+        ctx.shadowColor = 'rgba(28, 25, 23, 0.12)'; ctx.shadowBlur = 22; ctx.shadowOffsetY = 8;
+        ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+        ctx.restore();
+      }
+
+      function drawShowcasePanel(ctx, boxX, boxY, boxW, boxH, rule, item) {
+        ctx.save();
+        ctx.shadowColor = 'rgba(28, 25, 23, 0.07)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8;
+        drawRoundedRect(ctx, boxX, boxY, boxW, boxH, 28);
+        const stageBg = ctx.createLinearGradient(boxX, boxY, boxX, boxY + boxH);
+        stageBg.addColorStop(0, '#fffefb'); stageBg.addColorStop(0.65, '#faf7f1'); stageBg.addColorStop(1, '#f3ede3');
+        ctx.fillStyle = stageBg; ctx.fill();
+        ctx.shadowColor = 'transparent';
+        ctx.strokeStyle = 'rgba(120, 106, 90, 0.18)'; ctx.lineWidth = 2; ctx.stroke();
+
+        drawRoundedRect(ctx, boxX + 2, boxY + 2, boxW - 4, boxH - 4, 26);
+        ctx.clip();
+
+        const cx = boxX + boxW / 2, cy = boxY + boxH / 2 + 8;
+
+        if (item.aiTryOnApplied) {
+          drawProductWithTransform(ctx, item, cx, cy, boxW * 0.90, boxH * 0.90, false);
+        } else if (state.mode === 'mannequin' && rule.allowMannequin) {
+          const mImg = state.assets[rule.mannequinKey];
+          if (mImg) {
+            const cropH = state.mannequinFraming === 'torso' ? Math.round(mImg.height * 0.50) : mImg.height;
+            const mr = Math.min((boxW * 0.86) / mImg.width, (boxH * 0.84) / cropH);
+            const mw = mImg.width * mr, mh = cropH * mr;
+            ctx.drawImage(mImg, 0, 0, mImg.width, cropH, cx - mw / 2, cy - mh / 2, mw, mh);
+          }
+          drawProductWithTransform(ctx, item, cx, cy - boxH * 0.06, boxW * 0.72, boxH * 0.58, false);
+        } else if (state.mode === 'hand' && rule.allowHand) {
+          const hImg = state.assets.tanganAcuan;
+          if (hImg) {
+            const hr = Math.min((boxW * 0.90) / hImg.width, (boxH * 0.70) / hImg.height);
+            ctx.drawImage(hImg, cx - (hImg.width * hr) * 0.46, boxY + boxH - hImg.height * hr + 4, hImg.width * hr, hImg.height * hr);
+          }
+          drawProductWithTransform(ctx, item, cx - boxW * 0.07, boxY + boxH * 0.36, boxW * 0.62, boxH * 0.48, false);
+        } else {
+          drawProductWithTransform(ctx, item, cx, cy, boxW * 0.86, boxH * 0.84, true);
+        }
+        ctx.restore();
+      }
+
+      function drawPriceCardBox(ctx, x, y, w, h, item, theme) {
+        const disc = getDiscountInfo(item.normalPrice, item.promoPrice);
+        const compact = h < 235, spacious = h > 315;
+        ctx.save();
+        ctx.shadowColor = 'rgba(28, 25, 23, 0.07)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 6;
+        drawRoundedRect(ctx, x, y, w, h, 24);
+        ctx.fillStyle = '#ffffff'; ctx.fill();
+        ctx.shadowColor = 'transparent';
+        ctx.strokeStyle = theme.primary; ctx.lineWidth = 2.6; ctx.stroke();
+        drawRoundedRect(ctx, x + 1, y + 1, w - 2, h - 2, 23); ctx.clip();
+
+        const topBarH = compact ? 10 : 12;
+        ctx.fillStyle = theme.primary; ctx.fillRect(x, y, w, topBarH);
+        const cx = x + w / 2, innerY = y + topBarH, innerH = h - topBarH;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+        if (disc.hasDiscount) {
+          const row1Y = innerY + innerH * 0.20, row2Y = innerY + innerH * 0.41;
+          const pillH = compact ? Math.min(62, innerH * 0.36) : spacious ? 88 : 74;
+          const pillY = innerY + innerH * 0.72 - pillH / 2;
+
+          const discTxt = `DISKON ${disc.pct}%`, hematTxt = `HEMAT ${formatRupiah(disc.hemat)}`;
+          ctx.font = compact ? '800 14px Inter, sans-serif' : spacious ? '800 18px Inter, sans-serif' : '800 16px Inter, sans-serif';
+          const bw1 = ctx.measureText(discTxt).width + (compact ? 20 : 26);
+          const bw2 = ctx.measureText(hematTxt).width + (compact ? 20 : 26);
+          const bh = compact ? 28 : spacious ? 36 : 32;
+
+          if (bw1 + 10 + bw2 <= w - 28) {
+            const sx = cx - (bw1 + 10 + bw2) / 2;
+            drawRoundedRect(ctx, sx, row1Y - bh / 2, bw1, bh, bh / 2); ctx.fillStyle = '#dc2626'; ctx.fill();
+            ctx.fillStyle = '#ffffff'; ctx.fillText(discTxt, sx + bw1 / 2, row1Y + 1);
+            drawRoundedRect(ctx, sx + bw1 + 10, row1Y - bh / 2, bw2, bh, bh / 2); ctx.fillStyle = '#ecfdf5'; ctx.fill();
+            ctx.strokeStyle = 'rgba(15,118,110,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
+            ctx.fillStyle = '#0f766e'; ctx.fillText(hematTxt, sx + bw1 + 10 + bw2 / 2, row1Y + 1);
+          } else {
+            drawRoundedRect(ctx, cx - bw1 / 2, row1Y - bh / 2, bw1, bh, bh / 2); ctx.fillStyle = '#dc2626'; ctx.fill();
+            ctx.fillStyle = '#ffffff'; ctx.fillText(discTxt, cx, row1Y + 1);
+          }
+
+          const normTxt = formatRupiah(disc.normal);
+          ctx.fillStyle = '#78716c';
+          ctx.font = compact ? '600 22px Inter, sans-serif' : spacious ? '600 30px Inter, sans-serif' : '600 26px Inter, sans-serif';
+          const nw = ctx.measureText(normTxt).width;
+          ctx.fillText(normTxt, cx, row2Y);
+          ctx.strokeStyle = '#dc2626'; ctx.lineWidth = compact ? 2.8 : 3.4;
+          ctx.beginPath(); ctx.moveTo(cx - nw / 2 - 6, row2Y); ctx.lineTo(cx + nw / 2 + 6, row2Y); ctx.stroke();
+
+          const pillW = w - (compact ? 28 : 36);
+          drawRoundedRect(ctx, cx - pillW / 2, pillY, pillW, pillH, 16); ctx.fillStyle = theme.dark; ctx.fill();
+          const promoStr = formatRupiah(disc.promo);
+          let ps = compact ? 38 : spacious ? 54 : 46;
+          ctx.font = `900 ${ps}px Inter, sans-serif`;
+          while (ctx.measureText(promoStr).width > pillW - 24 && ps > 26) { ps -= 2; ctx.font = `900 ${ps}px Inter, sans-serif`; }
+          ctx.fillStyle = '#ffffff'; ctx.fillText(promoStr, cx, pillY + pillH / 2 + 2);
+        } else {
+          ctx.fillStyle = theme.primary; ctx.font = compact ? '800 16px Inter, sans-serif' : '800 20px Inter, sans-serif';
+          ctx.fillText('HARGA SPESIAL GERAI', cx, innerY + innerH * 0.28);
+          const pillW = w - (compact ? 28 : 36), pillH = compact ? 64 : spacious ? 92 : 78;
+          const pillY = innerY + innerH * 0.64 - pillH / 2;
+          drawRoundedRect(ctx, cx - pillW / 2, pillY, pillW, pillH, 16); ctx.fillStyle = theme.dark; ctx.fill();
+          const promoStr = formatRupiah(disc.promo);
+          let ps = compact ? 40 : spacious ? 54 : 46;
+          ctx.font = `900 ${ps}px Inter, sans-serif`;
+          while (ctx.measureText(promoStr).width > pillW - 24 && ps > 26) { ps -= 2; ctx.font = `900 ${ps}px Inter, sans-serif`; }
+          ctx.fillStyle = '#ffffff'; ctx.fillText(promoStr, cx, pillY + pillH / 2 + 2);
+        }
+        ctx.restore();
+      }
+
+      function drawDetailCardBox(ctx, x, y, w, h, item, theme) {
+        const compact = h < 260, spacious = h > 360;
+        const padX = compact ? 20 : 26, padTop = compact ? 16 : 22;
+        ctx.save();
+        ctx.shadowColor = 'rgba(28, 25, 23, 0.06)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 6;
+        drawRoundedRect(ctx, x, y, w, h, 24);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.94)'; ctx.fill();
+        ctx.shadowColor = 'transparent';
+        ctx.strokeStyle = 'rgba(120, 106, 90, 0.18)'; ctx.lineWidth = 1.8; ctx.stroke();
+        drawRoundedRect(ctx, x + 1, y + 1, w - 2, h - 2, 23); ctx.clip();
+
+        const hdrY = y + padTop;
+        drawRoundedRect(ctx, x + padX, hdrY + 1, 6, compact ? 18 : 22, 3); ctx.fillStyle = theme.primary; ctx.fill();
+        ctx.fillStyle = '#1c1917';
+        ctx.font = compact ? '900 15px Inter, sans-serif' : spacious ? '900 19px Inter, sans-serif' : '900 17px Inter, sans-serif';
+        ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.fillText('DETAIL PRODUK', x + padX + 15, hdrY + 1);
+
+        const hdrLineY = hdrY + (compact ? 27 : 34);
+        ctx.fillStyle = 'rgba(120, 106, 90, 0.16)'; ctx.fillRect(x + padX, hdrLineY, w - padX * 2, 1.5);
+
+        const rows = [
+          { label: 'BAHAN', val: (item.bahan || '').trim() || 'Pilihan Nyaman & Berkualitas' },
+          { label: 'DETAIL', val: (item.detail || '').trim() || 'Desain Rapi & Mudah Dipadukan' },
+          { label: 'FIT / UKURAN', val: (item.fit || '').trim() || 'Potongan Nyaman untuk Harian' }
+        ];
+        const bodyTop = hdrLineY + (compact ? 12 : 16);
+        const slotH = Math.max(120, y + h - bodyTop - (compact ? 12 : 18)) / rows.length;
+        const innerW = w - padX * 2;
+        const lblFont = compact ? '800 12px Inter, sans-serif' : spacious ? '800 15px Inter, sans-serif' : '800 13px Inter, sans-serif';
+        const valFont = compact ? '600 18px Inter, sans-serif' : spacious ? '600 24px Inter, sans-serif' : '600 20px Inter, sans-serif';
+        const valLH = compact ? 22 : spacious ? 30 : 25;
+
+        rows.forEach((row, idx) => {
+          const slotTop = bodyTop + idx * slotH;
+          ctx.font = valFont;
+          const lines = wrapTextLines(ctx, row.val, innerW, 2);
+          let ty = slotTop + Math.max(0, (slotH - ((compact ? 17 : spacious ? 22 : 19) + lines.length * valLH)) / 2);
+          ctx.fillStyle = theme.primary; ctx.font = lblFont; ctx.fillText(row.label, x + padX, ty);
+          ty += compact ? 17 : spacious ? 22 : 19;
+          ctx.fillStyle = '#1c1917'; ctx.font = valFont;
+          lines.forEach((ln) => { ctx.fillText(ln, x + padX, ty); ty += valLH; });
+          if (idx < rows.length - 1) {
+            ctx.fillStyle = 'rgba(120, 106, 90, 0.12)';
+            ctx.fillRect(x + padX, slotTop + slotH - 1, innerW, 1.5);
+          }
+        });
+        ctx.restore();
+      }
+
+      function drawSizeAndColorCardBox(ctx, x, y, w, h, item, theme, rule) {
+        const hasSizes = state.showSizes && state.activeSizes.length > 0;
+        const hasColors = state.showProductColors && item.productColors && item.productColors.length > 0;
+        const compact = h < 215, spacious = h > 300, padX = compact ? 18 : 24, innerW = w - padX * 2;
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(28, 25, 23, 0.06)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 6;
+        drawRoundedRect(ctx, x, y, w, h, 24);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)'; ctx.fill();
+        ctx.shadowColor = 'transparent';
+        ctx.strokeStyle = 'rgba(120, 106, 90, 0.18)'; ctx.lineWidth = 1.8; ctx.stroke();
+        drawRoundedRect(ctx, x + 1, y + 1, w - 2, h - 2, 23); ctx.clip();
+
+        function renderSizes(secY, secH) {
+          const pillH = compact ? 32 : spacious ? 42 : 36, gapX = compact ? 7 : 9, gapY = compact ? 7 : 9;
+          ctx.font = compact ? '800 16px Inter, sans-serif' : spacious ? '800 20px Inter, sans-serif' : '800 18px Inter, sans-serif';
+          const rows = []; let curRow = [], curW = 0;
+          state.activeSizes.forEach((sz) => {
+            const pw = Math.max(compact ? 46 : 56, ctx.measureText(sz).width + (compact ? 20 : 28));
+            if (curRow.length && curW + gapX + pw > innerW) { rows.push({ items: curRow, w: curW }); curRow = [{ sz, pw }]; curW = pw; }
+            else { curW += (curRow.length ? gapX : 0) + pw; curRow.push({ sz, pw }); }
+          });
+          if (curRow.length) rows.push({ items: curRow, w: curW });
+
+          const lblH = compact ? 18 : 24;
+          let cy = secY + Math.max(4, (secH - (lblH + rows.length * pillH + (rows.length - 1) * gapY)) / 2);
+          ctx.fillStyle = '#57534e';
+          ctx.font = compact ? '800 12px Inter, sans-serif' : spacious ? '800 15px Inter, sans-serif' : '800 13px Inter, sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+          ctx.fillText(rule.sizeTitle, x + w / 2, cy);
+          cy += lblH;
+          ctx.font = compact ? '800 16px Inter, sans-serif' : spacious ? '800 20px Inter, sans-serif' : '800 18px Inter, sans-serif';
+          ctx.textBaseline = 'middle';
+          rows.forEach((row) => {
+            let rx = x + (w - row.w) / 2;
+            row.items.forEach(({ sz, pw }) => {
+              drawRoundedRect(ctx, rx, cy, pw, pillH, 10);
+              ctx.fillStyle = '#faf7f2'; ctx.fill();
+              ctx.strokeStyle = theme.primary; ctx.lineWidth = 2.2; ctx.stroke();
+              ctx.fillStyle = '#1c1917'; ctx.fillText(sz, rx + pw / 2, cy + pillH / 2 + 1);
+              rx += pw + gapX;
+            });
+            cy += pillH + gapY;
+          });
+        }
+
+        function renderColors(secY, secH) {
+          const cols = item.productColors.slice(0, 3);
+          const r = compact ? 15 : spacious ? 21 : 18, lblH = compact ? 16 : 22;
+          const startY = secY + Math.max(4, (secH - (lblH + r * 2 + 8 + (compact ? 18 : 22))) / 2);
+          ctx.fillStyle = '#57534e';
+          ctx.font = compact ? '800 12px Inter, sans-serif' : spacious ? '800 15px Inter, sans-serif' : '800 13px Inter, sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+          ctx.fillText('WARNA DOMINAN', x + w / 2, startY);
+          const circleY = startY + lblH + r + 2;
+          const spacing = Math.min(innerW / Math.max(cols.length, 1), compact ? 110 : 126);
+          const firstX = x + w / 2 - (spacing * (cols.length - 1)) / 2;
+          cols.forEach((c, idx) => {
+            const cx = firstX + idx * spacing;
+            ctx.beginPath(); ctx.arc(cx, circleY, r + 3, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill(); ctx.strokeStyle = 'rgba(28,25,23,0.2)'; ctx.lineWidth = 1.6; ctx.stroke();
+            ctx.beginPath(); ctx.arc(cx, circleY, r, 0, Math.PI * 2); ctx.fillStyle = c.hex; ctx.fill();
+            ctx.fillStyle = '#44403c';
+            ctx.font = compact ? '700 13px Inter, sans-serif' : spacious ? '700 16px Inter, sans-serif' : '700 14px Inter, sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+            ctx.fillText(wrapTextLines(ctx, c.nama || 'Warna', spacing - 8, 1)[0] || '', cx, circleY + r + 7);
+          });
+        }
+
+        if (hasSizes && hasColors) {
+          const splitY = y + h * 0.52;
+          renderSizes(y + 8, splitY - y - 10);
+          ctx.fillStyle = 'rgba(120, 106, 90, 0.15)'; ctx.fillRect(x + padX, splitY, innerW, 1.5);
+          renderColors(splitY + 4, y + h - splitY - 10);
+        } else if (hasSizes) { renderSizes(y + 8, h - 16); }
+        else if (hasColors) { renderColors(y + 8, h - 16); }
+        ctx.restore();
+      }
+
+      function renderPosterToCanvas(targetCanvas, slideOverride = null) {
+        const spec = RATIO_SPECS[state.ratio] || RATIO_SPECS['9:16'];
+        const W = spec.w, H = spec.h;
+        const isSquare = state.ratio === '1:1', isPortrait = state.ratio === '4:5';
+        if (targetCanvas.width !== W || targetCanvas.height !== H) { targetCanvas.width = W; targetCanvas.height = H; }
+
+        const ctx = targetCanvas.getContext('2d');
+        const theme = getActiveTheme();
+        const rule = CATEGORY_RULES[state.category];
+        const isFeed = state.mode === 'feed';
+        const slideIdx = slideOverride !== null ? slideOverride : state.activeSlide;
+        const item = getActiveItem(slideIdx);
+
+        ctx.fillStyle = getPaperPattern(ctx); ctx.fillRect(0, 0, W, H);
+        drawSubtleBotanicalAccents(ctx, W, H, theme);
+
+        const headerH = drawIntegratedHeader(ctx, W, state.ratio, theme);
+        const footerH = drawIntegratedFooter(ctx, W, H, state.ratio, theme);
+        const hasStrip = state.showBottomStrip && (state.bottomStripText || '').trim().length > 0;
+        const stripH = hasStrip ? (isSquare ? 36 : isPortrait ? 44 : 52) : 0;
+        const stripY = H - footerH - (hasStrip ? (isSquare ? 10 : isPortrait ? 14 : 18) : 0) - stripH;
+        if (hasStrip) drawBottomHighlightStrip(ctx, W, stripY, stripH, theme, isSquare);
+
+        const feedDotSpace = isFeed ? (isSquare ? 18 : 24) : 0;
+        if (isFeed) {
+          const dotY = (hasStrip ? stripY : H - footerH) - (isSquare ? 10 : 14);
+          for (let i = 0; i < state.slideCount; i++) {
+            ctx.beginPath();
+            ctx.arc(W / 2 - ((state.slideCount - 1) * 20) / 2 + i * 20, dotY, i === slideIdx ? 6.5 : 4, 0, Math.PI * 2);
+            ctx.fillStyle = i === slideIdx ? theme.primary : 'rgba(28,25,23,0.22)';
+            ctx.fill();
+          }
+        }
+
+        const z2EndY = drawEditorialTopHeader(ctx, W, headerH + (isSquare ? 12 : isPortrait ? 18 : 26), state.ratio, theme, item, isFeed, slideIdx);
+        const padX = 48, contentW = W - 96;
+        const gridTop = z2EndY + (isSquare ? 12 : isPortrait ? 18 : 26);
+        const gridBottom = (hasStrip ? stripY : H - footerH) - feedDotSpace - (isSquare ? 12 : isPortrait ? 16 : 24);
+        const gridH = Math.max(360, gridBottom - gridTop);
+
+        const hasSizes = state.showSizes && state.activeSizes.length > 0;
+        const hasColors = state.showProductColors && item.productColors && item.productColors.length > 0;
+        const hasMetaCard = hasSizes || hasColors;
+
+        if (state.layout === 'split-left' || state.layout === 'split-right') {
+          const colGap = 24, imgColW = Math.round((contentW - colGap) * 0.55), infoColW = contentW - colGap - imgColW;
+          const imgX = state.layout === 'split-left' ? padX : padX + infoColW + colGap;
+          const infoX = state.layout === 'split-left' ? padX + imgColW + colGap : padX;
+
+          drawShowcasePanel(ctx, imgX, gridTop, imgColW, gridH, rule, item);
+
+          const activeCards = [{ id: 'price', weight: 0.30 }];
+          if (state.showDetail) activeCards.push({ id: 'detail', weight: 0.40 });
+          if (hasMetaCard) activeCards.push({ id: 'meta', weight: hasSizes && hasColors ? 0.30 : 0.22 });
+          const cardGap = isSquare ? 14 : isPortrait ? 18 : 22;
+          const availH = gridH - cardGap * (activeCards.length - 1);
+          const wSum = activeCards.reduce((a, c) => a + c.weight, 0);
+
+          let curY = gridTop;
+          activeCards.forEach((card, idx) => {
+            const ch = idx === activeCards.length - 1 ? Math.max(80, gridTop + gridH - curY) : Math.round(availH * (card.weight / wSum));
+            if (card.id === 'price') drawPriceCardBox(ctx, infoX, curY, infoColW, ch, item, theme);
+            else if (card.id === 'detail') drawDetailCardBox(ctx, infoX, curY, infoColW, ch, item, theme);
+            else drawSizeAndColorCardBox(ctx, infoX, curY, infoColW, ch, item, theme, rule);
+            curY += ch + cardGap;
+          });
+        } else {
+          const rowGap = isSquare ? 14 : isPortrait ? 18 : 24;
+          const stageH = Math.round((gridH - rowGap) * (isSquare ? 0.54 : isPortrait ? 0.56 : 0.58));
+          const bottomY = gridTop + stageH + rowGap, bottomH = gridH - stageH - rowGap;
+          drawShowcasePanel(ctx, padX, gridTop, contentW, stageH, rule, item);
+
+          const colGap = 20, leftW = Math.round((contentW - colGap) * 0.49), rightW = contentW - colGap - leftW, rightX = padX + leftW + colGap;
+          if (state.showDetail) {
+            const subGap = isSquare ? 12 : 16;
+            if (hasSizes) {
+              const pH = Math.round((bottomH - subGap) * 0.58);
+              drawPriceCardBox(ctx, padX, bottomY, leftW, pH, item, theme);
+              const prevC = state.showProductColors; state.showProductColors = false;
+              drawSizeAndColorCardBox(ctx, padX, bottomY + pH + subGap, leftW, bottomH - pH - subGap, item, theme, rule);
+              state.showProductColors = prevC;
+            } else { drawPriceCardBox(ctx, padX, bottomY, leftW, bottomH, item, theme); }
+
+            if (hasColors) {
+              const dH = Math.round((bottomH - subGap) * 0.64);
+              drawDetailCardBox(ctx, rightX, bottomY, rightW, dH, item, theme);
+              const prevS = state.showSizes; state.showSizes = false;
+              drawSizeAndColorCardBox(ctx, rightX, bottomY + dH + subGap, rightW, bottomH - dH - subGap, item, theme, rule);
+              state.showSizes = prevS;
+            } else { drawDetailCardBox(ctx, rightX, bottomY, rightW, bottomH, item, theme); }
+          } else if (hasMetaCard) {
+            drawPriceCardBox(ctx, padX, bottomY, leftW, bottomH, item, theme);
+            drawSizeAndColorCardBox(ctx, rightX, bottomY, rightW, bottomH, item, theme, rule);
+          } else {
+            drawPriceCardBox(ctx, padX, bottomY, contentW, bottomH, item, theme);
+          }
+        }
+      }
+
+      function renderAll() {
+        renderPosterToCanvas(dom.canvas, state.activeSlide);
+        if (state.mode === 'feed') renderFeedThumbnails();
+      }
+
+      function renderFeedThumbnails() {
+        dom.slideThumbStrip.innerHTML = '';
+        dom.activeSlideLabel.textContent = `Slide ${state.activeSlide + 1} dari ${state.slideCount}`;
+        for (let i = 0; i < state.slideCount; i++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `relative rounded-lg overflow-hidden border-2 transition cursor-pointer bg-studio-bg ${i === state.activeSlide ? 'border-studio-orange ring-2 ring-studio-orange/40 scale-[1.03]' : 'border-studio-border opacity-75 hover:opacity-100'}`;
+          const thumb = document.createElement('canvas');
+          thumb.className = 'w-full h-auto block';
+          renderPosterToCanvas(thumb, i);
+          const num = document.createElement('span');
+          num.className = `absolute top-1 left-1 px-1.5 py-0.5 rounded text-[10px] font-extrabold ${i === state.activeSlide ? 'bg-studio-orange text-slate-950' : 'bg-black/75 text-white'}`;
+          num.textContent = `#${i + 1}`;
+          btn.appendChild(thumb); btn.appendChild(num);
+          btn.addEventListener('click', () => { state.activeSlide = i; syncFormFromActiveItem(); syncModeUI(); renderAll(); });
+          dom.slideThumbStrip.appendChild(btn);
+        }
+      }
+
+      // =========================================================================
+      // SINKRONISASI UI & FORM
+      // =========================================================================
+      function updateTryOnUiLabels() {
+        const rule = CATEGORY_RULES[state.category];
+        const item = getActiveItem();
+        const showBox = rule.allowMannequin || rule.allowHand;
+        dom.aiTryOnBox.classList.toggle('hidden', !showBox);
+        dom.mannequinOptionsWrap.classList.toggle('hidden', !rule.allowMannequin);
+        if (rule.allowHand) {
+          dom.aiTryOnBtnText.textContent = '✨ Letakkan di Tangan Acuan dengan AI (Rp 0)';
+        } else if (rule.allowMannequin) {
+          dom.aiTryOnBtnText.textContent = item.bottomImage
+            ? `✨ Pakaikan Setelan ke ${rule.badge} dengan AI (Rp 0)`
+            : `✨ Pakaikan ke ${rule.badge} dengan AI (Rp 0)`;
+        }
+        dom.framingBtns.forEach((btn) => {
+          const active = btn.dataset.framing === state.mannequinFraming;
+          btn.className = active
+            ? 'framing-btn px-2.5 py-2 rounded-xl text-[11px] font-bold border border-purple-400 bg-purple-500/20 text-purple-100 transition cursor-pointer text-center'
+            : 'framing-btn px-2.5 py-2 rounded-xl text-[11px] font-bold border border-studio-border bg-studio-card text-studio-muted hover:text-white transition cursor-pointer text-center';
+        });
+      }
+
+      function syncFormFromActiveItem() {
+        const item = getActiveItem();
+        dom.productTitleInput.value = item.title || '';
+        dom.promoTagInput.value = item.promoTag || '';
+        dom.taglineInput.value = item.tagline || '';
+        dom.normalPriceInput.value = item.normalPrice || 0;
+        dom.promoPriceInput.value = item.promoPrice || 0;
+        dom.bahanInput.value = item.bahan || '';
+        dom.detailProdukInput.value = item.detail || '';
+        dom.infoFitInput.value = item.fit || '';
+        dom.uploadFileName.textContent = item.uploadName || 'Siap upload foto produk';
+        dom.bottomUploadName.textContent = item.bottomImage
+          ? `Bawahan aktif: ${item.bottomName}`
+          : 'Hanya atasan → otomatis Manekin Torso (tanpa kaki & tanpa besi)';
+        dom.clearBottomBtn.classList.toggle('hidden', !item.bottomImage);
+
+        dom.posXSlider.value = item.posX || 0; dom.posXVal.textContent = item.posX || 0;
+        dom.posYSlider.value = item.posY || 0; dom.posYVal.textContent = item.posY || 0;
+        dom.scaleSlider.value = item.scale || 100; dom.scaleVal.textContent = `${item.scale || 100}%`;
+        dom.rotSlider.value = item.rotation || 0; dom.rotVal.textContent = `${item.rotation || 0}°`;
+        dom.editingSlideNotice.textContent = `Sedang mengedit: Slide #${state.activeSlide + 1}`;
+        dom.dropZoneHeading.textContent = state.mode === 'feed'
+          ? `Upload Foto Khusus Slide #${state.activeSlide + 1} (JPG / PNG / WebP)`
+          : 'Klik atau Seret Foto Produk (JPG / PNG / WebP)';
+
+        syncDiscountBadge();
+        renderProductColorsEditor();
+        updateTryOnUiLabels();
+      }
+
+      function syncRatioUI() {
+        const spec = RATIO_SPECS[state.ratio];
+        dom.canvasMetaInfo.textContent = `Export PNG: ${spec.desc}`;
+        dom.downloadSingleText.textContent = state.mode === 'feed'
+          ? `Download Slide #${state.activeSlide + 1} (${spec.w}×${spec.h})`
+          : `Download PNG HD (${spec.w}×${spec.h})`;
+        dom.ratioBtns.forEach((btn) => {
+          const act = btn.dataset.ratio === state.ratio;
+          btn.className = act
+            ? 'ratio-btn p-2.5 rounded-xl border border-studio-teal bg-studio-teal/20 text-teal-200 ring-1 ring-studio-teal/40 text-center transition cursor-pointer flex flex-col items-center gap-0.5'
+            : 'ratio-btn p-2.5 rounded-xl border border-studio-border bg-studio-panel text-studio-muted hover:text-white text-center transition cursor-pointer flex flex-col items-center gap-0.5';
+        });
+        dom.quickRatioBtns.forEach((btn) => {
+          const act = btn.dataset.ratio === state.ratio;
+          btn.className = act
+            ? 'quick-ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-studio-teal text-slate-950 transition cursor-pointer'
+            : 'quick-ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-extrabold text-studio-muted hover:text-white transition cursor-pointer';
+        });
+      }
+
+      function syncModeUI() {
+        const rule = CATEGORY_RULES[state.category];
+        dom.tabMannequin.disabled = !rule.allowMannequin;
+        dom.mannequinTabSub.textContent = rule.allowMannequin ? '04 • Manekin Polos' : 'NONAKTIF';
+        dom.mannequinTabDesc.textContent = rule.allowMannequin ? rule.badge : `${rule.label}: Tanpa Manekin`;
+        if (!rule.allowMannequin && state.mode === 'mannequin') state.mode = 'catalog';
+
+        dom.tabHand.disabled = !rule.allowHand;
+        dom.handTabSub.textContent = rule.allowHand ? '03 • Tangan Acuan' : 'NONAKTIF';
+        dom.handTabDesc.textContent = rule.allowHand ? 'Tampil di atas telapak tangan acuan' : 'Hanya untuk Tas & Parfum/Kosmetik';
+        if (!rule.allowHand && state.mode === 'hand') state.mode = 'catalog';
+
+        dom.modeTabs.forEach((btn) => {
+          const act = btn.dataset.mode === state.mode;
+          const dot = btn.querySelector('.mode-dot');
+          btn.className = act
+            ? 'mode-tab text-left p-3.5 rounded-xl border border-studio-teal bg-studio-teal/15 ring-1 ring-studio-teal/40 transition-all duration-150 cursor-pointer flex flex-col gap-1'
+            : 'mode-tab text-left p-3.5 rounded-xl border border-studio-border bg-studio-card hover:border-slate-500 transition-all duration-150 cursor-pointer flex flex-col gap-1 disabled:opacity-40 disabled:cursor-not-allowed';
+          if (dot) dot.className = `mode-dot w-2.5 h-2.5 rounded-full ${act ? 'bg-studio-teal' : 'bg-studio-border'}`;
+        });
+
+        const isFeed = state.mode === 'feed';
+        dom.activeModeChip.textContent = isFeed ? `Feed IG (${state.slideCount} Slide • ${state.ratio})` : `${state.mode === 'hand' ? 'Produk Dipegang' : state.mode === 'mannequin' ? rule.badge : 'Poster Katalog'} • ${state.ratio}`;
+        dom.feedSlideControls.classList.toggle('hidden', !isFeed);
+        dom.feedStripSection.classList.toggle('hidden', !isFeed);
+        dom.feedStripSection.classList.toggle('flex', isFeed);
+        dom.downloadAllSlidesBtn.classList.toggle('hidden', !isFeed);
+        dom.downloadAllSlidesText.textContent = `Download Semua Slide (Batch ${state.slideCount} PNG HD)`;
+        dom.slideCountBtns.forEach((b) => {
+          const act = Number(b.dataset.slides) === state.slideCount;
+          b.className = act ? 'slide-count-btn px-2.5 py-1 rounded-lg text-xs font-bold border border-studio-orange bg-studio-orange text-slate-950 transition cursor-pointer' : 'slide-count-btn px-2.5 py-1 rounded-lg text-xs font-bold border border-studio-border bg-studio-card text-studio-muted hover:text-white transition cursor-pointer';
+        });
+        syncRatioUI();
+        updateTryOnUiLabels();
+      }
+
+      function syncCategoryUI(resetSizes = true) {
+        const rule = CATEGORY_RULES[state.category];
+        dom.ruleStatusBadge.textContent = rule.badge;
+        if (rule.noticeType === 'orange') {
+          dom.categoryRuleNotice.className = 'rounded-xl p-3 flex items-start gap-2.5 border text-xs leading-relaxed bg-studio-orange/15 border-studio-orange/45 text-orange-200';
+          dom.categoryRuleNotice.textContent = rule.noticeText;
+        } else if (rule.noticeType === 'teal') {
+          dom.categoryRuleNotice.className = 'rounded-xl p-3 flex items-start gap-2.5 border text-xs leading-relaxed bg-sky-500/15 border-sky-400/35 text-sky-100';
+          dom.categoryRuleNotice.textContent = rule.noticeText;
+        } else {
+          dom.categoryRuleNotice.className = 'hidden';
+        }
+        if (resetSizes) state.activeSizes = [...rule.sizes];
+        renderSizeChips();
+        syncModeUI();
+      }
+
+      function renderSizeChips() {
+        const rule = CATEGORY_RULES[state.category];
+        dom.sizeChipsContainer.innerHTML = '';
+        dom.sizeChipsContainer.classList.toggle('opacity-45', !state.showSizes);
+        rule.sizes.forEach((sz) => {
+          const active = state.activeSizes.includes(sz);
+          const btn = document.createElement('button');
+          btn.type = 'button'; btn.textContent = sz;
+          btn.className = active
+            ? 'px-3.5 py-2 rounded-xl text-xs font-extrabold bg-studio-teal text-slate-950 border border-teal-300 transition cursor-pointer'
+            : 'px-3.5 py-2 rounded-xl text-xs font-bold bg-studio-card text-studio-muted border border-studio-border hover:border-slate-500 transition cursor-pointer';
+          btn.addEventListener('click', () => {
+            if (state.activeSizes.includes(sz)) state.activeSizes = state.activeSizes.filter((x) => x !== sz);
+            else { state.activeSizes.push(sz); state.activeSizes.sort((a, b) => rule.sizes.indexOf(a) - rule.sizes.indexOf(b)); }
+            renderSizeChips(); renderAll();
+          });
+          dom.sizeChipsContainer.appendChild(btn);
+        });
+      }
+
+      function renderProductColorsEditor() {
+        const item = getActiveItem();
+        dom.productColorsEditor.innerHTML = '';
+        item.productColors.forEach((col, idx) => {
+          const wrap = document.createElement('div');
+          wrap.className = 'flex items-center gap-1.5 bg-studio-card border border-studio-border rounded-xl px-2 py-1.5';
+          const picker = document.createElement('input');
+          picker.type = 'color'; picker.value = col.hex; picker.className = 'w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer shrink-0';
+          picker.addEventListener('input', (e) => { item.productColors[idx].hex = e.target.value; renderAll(); });
+          const nameInput = document.createElement('input');
+          nameInput.type = 'text'; nameInput.value = col.nama; nameInput.maxLength = 16;
+          nameInput.className = 'w-20 bg-transparent text-[11px] font-semibold text-studio-text focus:outline-none';
+          nameInput.addEventListener('input', (e) => { item.productColors[idx].nama = e.target.value; renderAll(); });
+          const del = document.createElement('button');
+          del.type = 'button'; del.textContent = '×'; del.className = 'text-studio-muted hover:text-red-400 font-bold text-sm leading-none px-1 cursor-pointer';
+          del.addEventListener('click', () => { item.productColors.splice(idx, 1); renderProductColorsEditor(); renderAll(); });
+          wrap.appendChild(picker); wrap.appendChild(nameInput); wrap.appendChild(del);
+          dom.productColorsEditor.appendChild(wrap);
+        });
+      }
+
+      function renderThemeSwatches() {
+        dom.colorSwatches.innerHTML = '';
+        dom.activeColorName.textContent = getActiveTheme().name;
+        THEME_PALETTE.forEach((swatch, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button'; btn.title = swatch.name;
+          btn.className = `w-9 h-9 rounded-full transition-transform duration-150 cursor-pointer border-2 ${idx === state.colorIndex ? 'border-white scale-110 ring-2 ring-studio-teal/60' : 'border-white/20 hover:scale-105'}`;
+          btn.style.backgroundColor = swatch.primary;
+          btn.addEventListener('click', () => {
+            state.colorIndex = idx;
+            try { localStorage.setItem('brandfeed_last_color', swatch.id); } catch (_) {}
+            renderThemeSwatches(); renderAll();
+          });
+          dom.colorSwatches.appendChild(btn);
+        });
+      }
+
+      function syncLayoutBtns() {
+        dom.layoutBtns.forEach((btn) => {
+          const act = btn.dataset.layout === state.layout;
+          btn.className = act
+            ? 'layout-btn px-2 py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border border-studio-teal bg-studio-teal/20 text-teal-200 transition cursor-pointer text-center'
+            : 'layout-btn px-2 py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border border-studio-border bg-studio-card text-studio-muted hover:text-white transition cursor-pointer text-center';
+        });
+      }
+
+      function syncDiscountBadge() {
+        const disc = getDiscountInfo(getActiveItem().normalPrice, getActiveItem().promoPrice);
+        dom.discountPreviewBadge.textContent = disc.hasDiscount ? `DISKON ${disc.pct}% • HEMAT ${formatRupiah(disc.hemat)}` : 'HARGA SPESIAL';
+      }
+
+      // =========================================================================
+      // UPLOAD & EXPORT
+      // =========================================================================
+      function handleProductUpload(file) {
+        if (!file || !file.type.startsWith('image/')) { showToast('File harus berupa gambar (JPG, PNG, WebP).', 'error'); return; }
+        const item = getActiveItem();
+        item.originalBlob = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            item.originalImage = img;
+            item.processedImage = img;
+            item.aiTryOnApplied = false;
+            item.uploadName = `File aktif: ${file.name} (${img.naturalWidth}×${img.naturalHeight} px)`;
+            dom.uploadFileName.textContent = item.uploadName;
+            renderAll();
+            showToast('Foto produk berhasil dimuat!', 'success');
+            if (dom.autoAnalyzeCheck.checked) analyzeProductDualPath();
+          };
+          img.onerror = () => showToast('Gagal membaca file gambar.', 'error');
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function buildExportFilename(suffix = '') {
+        const ratioSlug = RATIO_SPECS[state.ratio].slug;
+        const slug = (getActiveItem().title || 'produk').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 26) || 'produk';
+        return suffix ? `brandfeed-${ratioSlug}-${slug}-${suffix}.png` : `brandfeed-${ratioSlug}-${slug}.png`;
+      }
+
+      function triggerPngDownload(canvasEl, filename) {
+        const a = document.createElement('a');
+        a.download = filename;
+        a.href = canvasEl.toDataURL('image/png', 1.0);
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+
+      async function downloadAllSlidesBatch() {
+        const tmp = document.createElement('canvas');
+        dom.downloadAllSlidesBtn.disabled = true;
+        try {
+          for (let i = 0; i < state.slideCount; i++) {
+            renderPosterToCanvas(tmp, i);
+            triggerPngDownload(tmp, buildExportFilename(`slide-${i + 1}-of-${state.slideCount}`));
+            await new Promise((r) => setTimeout(r, 350));
+          }
+          recordDownloadCount(state.slideCount);
+          showToast(`Seluruh ${state.slideCount} slide HD berhasil diunduh!`, 'success');
+        } finally {
+          dom.downloadAllSlidesBtn.disabled = false;
+        }
+      }
+
+      // =========================================================================
+      // EVENT LISTENERS
+      // =========================================================================
+      function bindEvents() {
+        dom.modeTabs.forEach((btn) => btn.addEventListener('click', () => { if (btn.disabled) return; state.mode = btn.dataset.mode; syncFormFromActiveItem(); syncModeUI(); renderAll(); }));
+        const setRatio = (r) => { if (!RATIO_SPECS[r]) return; state.ratio = r; syncModeUI(); renderAll(); };
+        dom.ratioBtns.forEach((b) => b.addEventListener('click', () => setRatio(b.dataset.ratio)));
+        dom.quickRatioBtns.forEach((b) => b.addEventListener('click', () => setRatio(b.dataset.ratio)));
+
+        dom.categorySelect.addEventListener('change', (e) => { state.category = e.target.value; syncCategoryUI(true); renderAll(); });
+        dom.brandPresetSelect.addEventListener('change', (e) => {
+          state.brandPreset = e.target.value;
+          if (state.brandPreset !== 'CUSTOM') { state.brandText = state.brandPreset; dom.brandTextInput.value = state.brandText; }
+          else dom.brandTextInput.focus();
+          renderAll();
+        });
+        dom.brandTextInput.addEventListener('input', (e) => { state.brandText = e.target.value; renderAll(); });
+        dom.showSizesToggle.addEventListener('change', (e) => { state.showSizes = e.target.checked; renderSizeChips(); renderAll(); });
+        dom.selectAllSizesBtn.addEventListener('click', () => { state.activeSizes = [...CATEGORY_RULES[state.category].sizes]; renderSizeChips(); renderAll(); });
+
+        dom.sampleShirtBtn.addEventListener('click', () => { generateSampleProduct('baju'); showToast('Contoh Baju dimuat!', 'success'); });
+        dom.sampleShoeBtn.addEventListener('click', () => { generateSampleProduct('sepatu'); showToast('Contoh Sepatu dimuat!', 'warn'); });
+        dom.samplePerfumeBtn.addEventListener('click', () => { generateSampleProduct('parfum'); showToast('Contoh Parfum dimuat!', 'success'); });
+
+        dom.productFileInput.addEventListener('change', (e) => { if (e.target.files?.[0]) handleProductUpload(e.target.files[0]); e.target.value = ''; });
+        dom.dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dom.dropZone.classList.add('border-studio-teal', 'bg-studio-teal/10'); });
+        dom.dropZone.addEventListener('dragleave', () => dom.dropZone.classList.remove('border-studio-teal', 'bg-studio-teal/10'));
+        dom.dropZone.addEventListener('drop', (e) => { e.preventDefault(); dom.dropZone.classList.remove('border-studio-teal', 'bg-studio-teal/10'); if (e.dataTransfer.files?.[0]) handleProductUpload(e.dataTransfer.files[0]); });
+
+        dom.framingBtns.forEach((btn) => btn.addEventListener('click', () => { state.mannequinFraming = btn.dataset.framing; updateTryOnUiLabels(); renderAll(); }));
+        dom.bottomFileInput.addEventListener('change', (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+              const item = getActiveItem();
+              item.bottomImage = img;
+              item.bottomName = file.name;
+              state.mannequinFraming = 'full';
+              syncFormFromActiveItem();
+              showToast('Foto bawahan dimuat! Siap AI Try-On setelan.', 'success');
+            };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+          e.target.value = '';
+        });
+        dom.clearBottomBtn.addEventListener('click', () => {
+          const item = getActiveItem();
+          item.bottomImage = null; item.bottomName = '';
+          state.mannequinFraming = 'torso';
+          syncFormFromActiveItem();
+        });
+
+        dom.aiCleanBtn.addEventListener('click', triggerAiClean);
+        dom.aiTryOnBtn.addEventListener('click', triggerAiTryOn);
+        dom.aiAnalyzeBtn.addEventListener('click', analyzeProductDualPath);
+        dom.offlineQuickFillBtn.addEventListener('click', () => runOfflineLocalAnalyzer(false));
+
+        dom.instantRemoveBgBtn.addEventListener('click', removeSolidBackgroundInstant);
+        dom.aiRemoveBgBtn.addEventListener('click', removeBackgroundAiLocal);
+        dom.resetPhotoBtn.addEventListener('click', () => {
+          const item = getActiveItem();
+          if (!item.originalImage) return;
+          item.processedImage = item.originalImage;
+          item.aiTryOnApplied = false;
+          renderAll();
+          showToast('Foto dikembalikan ke versi asli.', 'info');
+        });
+        dom.bgToleranceSlider.addEventListener('input', (e) => { state.bgTolerance = Number(e.target.value); dom.bgToleranceVal.textContent = state.bgTolerance; });
+
+        dom.posXSlider.addEventListener('input', (e) => { getActiveItem().posX = Number(e.target.value); dom.posXVal.textContent = e.target.value; renderAll(); });
+        dom.posYSlider.addEventListener('input', (e) => { getActiveItem().posY = Number(e.target.value); dom.posYVal.textContent = e.target.value; renderAll(); });
+        dom.scaleSlider.addEventListener('input', (e) => { getActiveItem().scale = Number(e.target.value); dom.scaleVal.textContent = `${e.target.value}%`; renderAll(); });
+        dom.rotSlider.addEventListener('input', (e) => { getActiveItem().rotation = Number(e.target.value); dom.rotVal.textContent = `${e.target.value}°`; renderAll(); });
+        dom.resetTransformBtn.addEventListener('click', () => { Object.assign(getActiveItem(), { posX: 0, posY: 0, scale: 100, rotation: 0 }); syncFormFromActiveItem(); renderAll(); });
+
+        dom.slideCountBtns.forEach((btn) => btn.addEventListener('click', () => { state.slideCount = Number(btn.dataset.slides); if (state.activeSlide >= state.slideCount) state.activeSlide = state.slideCount - 1; syncFormFromActiveItem(); syncModeUI(); renderAll(); }));
+        dom.applyToAllSlidesBtn.addEventListener('click', () => {
+          const cur = getActiveItem();
+          state.slides.forEach((s) => Object.assign(s, { title: cur.title, tagline: cur.tagline, normalPrice: cur.normalPrice, promoPrice: cur.promoPrice, bahan: cur.bahan, detail: cur.detail, fit: cur.fit, productColors: cur.productColors.map((x) => ({ ...x })), originalImage: cur.originalImage, processedImage: cur.processedImage, aiTryOnApplied: cur.aiTryOnApplied }));
+          renderAll(); showToast(`Slide #${state.activeSlide + 1} disamakan ke semua slide!`, 'success');
+        });
+
+        dom.showDetailToggle.addEventListener('change', (e) => { state.showDetail = e.target.checked; dom.detailFieldsBox.classList.toggle('opacity-50', !state.showDetail); renderAll(); });
+        dom.layoutBtns.forEach((btn) => btn.addEventListener('click', () => { state.layout = btn.dataset.layout; syncLayoutBtns(); renderAll(); }));
+
+        dom.productTitleInput.addEventListener('input', (e) => { getActiveItem().title = e.target.value; renderAll(); });
+        dom.promoTagInput.addEventListener('input', (e) => { getActiveItem().promoTag = e.target.value; renderAll(); });
+        dom.taglineInput.addEventListener('input', (e) => { getActiveItem().tagline = e.target.value; renderAll(); });
+        dom.normalPriceInput.addEventListener('input', (e) => { getActiveItem().normalPrice = Number(e.target.value) || 0; syncDiscountBadge(); renderAll(); });
+        dom.promoPriceInput.addEventListener('input', (e) => { getActiveItem().promoPrice = Number(e.target.value) || 0; syncDiscountBadge(); renderAll(); });
+        dom.bahanInput.addEventListener('input', (e) => { getActiveItem().bahan = e.target.value; renderAll(); });
+        dom.detailProdukInput.addEventListener('input', (e) => { getActiveItem().detail = e.target.value; renderAll(); });
+        dom.infoFitInput.addEventListener('input', (e) => { getActiveItem().fit = e.target.value; renderAll(); });
+
+        dom.showProductColorsToggle.addEventListener('change', (e) => { state.showProductColors = e.target.checked; renderAll(); });
+        dom.addProductColorBtn.addEventListener('click', () => {
+          const item = getActiveItem();
+          if (item.productColors.length >= 3) { showToast('Maksimal 3 titik warna dominan.', 'warn'); return; }
+          item.productColors.push({ nama: 'Warna Baru', hex: '#475569' });
+          renderProductColorsEditor(); renderAll();
+        });
+
+        dom.showBgAccentsToggle.addEventListener('change', (e) => { state.showBgAccents = e.target.checked; renderAll(); });
+        dom.showBottomStripToggle.addEventListener('change', (e) => { state.showBottomStrip = e.target.checked; dom.bottomStripInputWrap.classList.toggle('opacity-45', !state.showBottomStrip); renderAll(); });
+        dom.bottomStripInput.addEventListener('input', (e) => { state.bottomStripText = e.target.value; renderAll(); });
+
+        dom.quotaRefreshBtn.addEventListener('click', () => fetchLiveQuota(false));
+
+        const openCfModal = () => { dom.cfInfoModal.classList.remove('hidden'); dom.cfInfoModal.classList.add('flex'); };
+        const closeCfModal = () => { dom.cfInfoModal.classList.add('hidden'); dom.cfInfoModal.classList.remove('flex'); };
+        dom.openCfInfoBtn.addEventListener('click', openCfModal);
+        dom.closeCfInfoBtn.addEventListener('click', closeCfModal);
+        dom.closeCfInfoFooterBtn.addEventListener('click', closeCfModal);
+        dom.cfInfoModal.addEventListener('click', (e) => { if (e.target === dom.cfInfoModal) closeCfModal(); });
+
+        dom.downloadSingleBtn.addEventListener('click', () => {
+          triggerPngDownload(dom.canvas, buildExportFilename(state.mode === 'feed' ? `slide-${state.activeSlide + 1}` : ''));
+          recordDownloadCount(1);
+          showToast('Poster PNG HD berhasil diunduh!', 'success');
+        });
+        dom.downloadAllSlidesBtn.addEventListener('click', downloadAllSlidesBatch);
+      }
+
+      function init() {
+        try {
+          const savedColor = localStorage.getItem('brandfeed_last_color');
+          if (savedColor) {
+            const idx = THEME_PALETTE.findIndex((c) => c.id === savedColor || c.primary === savedColor);
+            if (idx >= 0) state.colorIndex = idx;
+          }
+        } catch (_) {}
+
+        bindEvents();
+        renderThemeSwatches();
+        syncLayoutBtns();
+        renderFixedAssetsManager();
+        generateSampleProduct('baju');
+        autoLoadFixedAssets();
+        state.quota.used = loadLocalQuota();
+        state.quota.downloads = loadLocalDownloads();
+        syncQuotaUI();
+        fetchLiveQuota(true);
+        setInterval(syncQuotaUI, 60000);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => renderAll());
+      }
+
+      if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', init);
+      else init();
+    })();
+  </script>
+</body>
+</html>
